@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#1e293b}
+    .header{background:linear-gradient(120deg,#102a43,#064e3b);color:#fff;padding:30px 18px;text-align:center}
+    .header h1{margin:8px 0;font-size:34px}.header p,.header small{opacity:.9}
+    .container{max-width:1500px;margin:auto;padding:24px 18px}
+    .filters{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+    input,select{padding:13px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;background:#fff}
+    #searchInput{min-width:300px;flex:1}.date-note{font-size:12px;color:#64748b;text-align:center;margin-top:-8px;margin-bottom:18px}
+    button{border:0;border-radius:10px;padding:12px 18px;font-weight:bold;cursor:pointer}
+    .admin-btn{background:#065f46;color:#fff}.top3-btn{background:#7c3aed;color:#fff}.close-btn{background:#e2e8f0;color:#334155}.update-btn{background:#2563eb;color:#fff}.danger-btn{background:#dc2626;color:#fff}.download-btn{background:#2563eb;color:#fff;padding:8px 12px;font-size:12px}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}.stat{background:#fff;padding:22px;border-radius:16px;text-align:center;box-shadow:0 5px 18px rgba(0,0,0,.06)}.stat h3{margin:0;color:#64748b;font-size:13px}.value{font-size:30px;font-weight:bold;margin-top:8px}
+    .region-section{margin-bottom:28px}.region-title{display:flex;justify-content:space-between;gap:15px;align-items:center;background:linear-gradient(90deg,#0f766e,#065f46);color:#fff;padding:15px 18px;border-radius:12px 12px 0 0}.region-title h2{margin:0;font-size:20px}.coordinator{text-align:right;font-size:13px;line-height:1.5}
+    .table-box{overflow:auto;background:#fff;box-shadow:0 5px 18px rgba(0,0,0,.06)}table{width:100%;border-collapse:collapse;min-width:750px}th{background:#e2e8f0;padding:13px;text-align:left;font-size:13px}td{padding:13px;border-bottom:1px solid #e2e8f0}.amount{font-weight:bold;color:#047857}.rank{font-weight:bold}.winner{background:#fffbeb}
+    .hidden{display:none!important}.modal.hidden{display:none!important}.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px}.modal-box{width:100%;max-width:900px;max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+    .admin-card{background:#f8fafc;border:1px solid #e2e8f0;padding:18px;border-radius:14px;margin:15px 0}.admin-card h3{margin:0 0 12px}.modal-box input,.modal-box select{width:100%;margin:7px 0}.modal-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.admin-search{margin-bottom:8px}.poster-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    /* ===== PREMIUM WINNER / TOP 3 POSTERS ===== */
+    #winnerPoster,#top3Poster{position:relative;isolation:isolate;width:1080px;max-width:100%;overflow:hidden;color:#f8fafc;padding:56px 48px;text-align:center;border:3px solid #d4af37;border-radius:26px;background:radial-gradient(circle at 50% 0%,rgba(251,191,36,.16),transparent 34%),radial-gradient(circle at 10% 90%,rgba(16,185,129,.16),transparent 34%),linear-gradient(135deg,#081923 0%,#0f2f31 48%,#0b4a3a 100%);box-shadow:0 24px 70px rgba(0,0,0,.38)}
+    #winnerPoster:before,#top3Poster:before{content:'';position:absolute;inset:14px;border:1px solid rgba(212,175,55,.38);border-radius:18px;pointer-events:none;z-index:-1}
+    #winnerPoster:after,#top3Poster:after{content:'✦';position:absolute;right:42px;top:28px;font-size:46px;color:rgba(251,191,36,.22)}
+    #winnerPoster h1,#top3Poster h1{font-family:Georgia,serif;font-size:58px;letter-spacing:2px;margin:12px 0 28px;text-shadow:0 5px 18px rgba(0,0,0,.28)}
+    #winnerPoster h2{font-size:38px;color:#fde68a;margin:14px 0}.posterAmount{font-family:Georgia,serif;font-size:42px;font-weight:bold;color:#fbbf24;margin-top:20px}
+    .top3-list{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:32px;align-items:stretch}
+    .top3-card{position:relative;overflow:hidden;padding:28px 20px 26px;border-radius:22px;background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.055));border:1px solid rgba(255,255,255,.20);box-shadow:0 14px 34px rgba(0,0,0,.2);backdrop-filter:blur(4px)}
+    .top3-card:nth-child(1){transform:translateY(-8px);border-color:rgba(251,191,36,.62);background:linear-gradient(160deg,rgba(251,191,36,.18),rgba(255,255,255,.07))}
+    .top3-card:before{content:'';position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.05);top:-58px;right:-42px}
+    .medal{font-size:54px;filter:drop-shadow(0 5px 8px rgba(0,0,0,.28))}.top3-name{font-family:Georgia,serif;font-size:25px;font-weight:bold;line-height:1.18;margin:16px 0 9px;color:#fff}.top3-region{font-size:14px;font-weight:800;color:#a7f3d0;margin:7px 0}.top3-centre{font-size:16px;color:#dbeafe;min-height:38px}.top3-amount{font-family:Georgia,serif;color:#fbbf24;font-size:31px;font-weight:bold;margin-top:16px}.poster-subtitle{letter-spacing:4px;font-size:16px;color:#d1d5db;text-transform:uppercase}.poster-date{display:inline-block;margin-top:8px;padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);font-size:12px;color:#e5e7eb}
+    .winner-photo{width:240px;height:240px;border-radius:50%;object-fit:cover;border:5px solid #fbbf24;box-shadow:0 0 0 8px rgba(251,191,36,.12),0 16px 40px rgba(0,0,0,.35);margin:18px auto;display:none;background:#173b3b}.winner-photo-placeholder{width:240px;height:240px;border-radius:50%;margin:18px auto;display:flex;align-items:center;justify-content:center;font-size:96px;border:5px solid #fbbf24;background:rgba(255,255,255,.08)}.top3-photo{width:150px;height:150px;border-radius:50%;object-fit:cover;border:4px solid rgba(255,255,255,.75);box-shadow:0 10px 24px rgba(0,0,0,.28);margin:8px auto 12px;display:block;background:#173b3b}.qari-photo-admin{width:88px;height:88px;border-radius:50%;object-fit:cover;border:3px solid #e2e8f0;background:#f8fafc;display:block;margin:8px auto}.qari-photo-box{display:grid;grid-template-columns:130px 1fr;gap:16px;align-items:center}.qari-photo-status{font-size:12px;color:#64748b;margin-top:8px}
+    @media(max-width:700px){.header h1{font-size:24px}.stats{grid-template-columns:1fr}.filters>*{width:100%}#searchInput{min-width:0}.region-title{flex-direction:column;align-items:flex-start}.coordinator{text-align:left}.top3-list{grid-template-columns:1fr}#winnerPoster,#top3Poster{padding:34px 18px}#winnerPoster h1,#top3Poster h1{font-size:38px}.top3-card:nth-child(1){transform:none}}
+  
+
+    /* ===== ADMIN PASSWORD MANAGEMENT ===== */
+    .password-card{border:1px solid #fde68a;background:#fffbeb}
+    .password-grid{display:grid;grid-template-columns:repeat(3,minmax(180px,1fr));gap:10px}
+    .password-grid input{width:100%;box-sizing:border-box}
+    .password-msg{margin-top:10px;font-size:13px;font-weight:700}
+    @media(max-width:800px){.password-grid{grid-template-columns:1fr}}
+
+    /* ===== PROFESSIONAL UPGRADE ===== */
+    .lang-btn{position:absolute;top:14px;right:14px;background:#fff;color:#065f46;padding:8px 14px;border-radius:20px}
+    .summary-grid,.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:18px 0}
+    .summary-card,.insight-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.04)}
+    .summary-card b,.insight-card b{display:block;font-size:22px;color:#047857;margin-top:7px}
+    .pro-section{background:#fff;padding:18px;border-radius:16px;margin:18px 0;box-shadow:0 5px 18px rgba(0,0,0,.05)}
+    .pro-section h2{margin:0 0 12px;font-size:20px}
+    .delete-btn{background:#dc2626;color:#fff}
+    .history-btn{background:#64748b;color:#fff}
+    .audit-log{max-height:280px;overflow:auto;font-size:13px;border:1px solid #e2e8f0;border-radius:10px}
+    .audit-row{padding:10px;border-bottom:1px solid #e2e8f0}
+    .history-table{width:100%;min-width:0}
+    body.rtl{direction:rtl;font-family:Arial,"Noto Nastaliq Urdu",sans-serif}
+    body.rtl .lang-btn{right:auto;left:14px}
+    @media(max-width:700px){.lang-btn{position:static;margin:8px auto;display:block}.summary-grid,.insight-grid{grid-template-columns:1fr}}
+
+
+    /* ===== PRIVATE ROLE-BASED PORTAL ===== */
+    body.portal-locked .container{filter:blur(6px);pointer-events:none;user-select:none}
+    body.portal-locked #adminModal .close-btn{display:none}
+    .portal-profile{display:flex;align-items:center;justify-content:space-between;gap:18px;background:linear-gradient(120deg,#ffffff,#ecfdf5);border:1px solid #cbd5e1;border-radius:18px;padding:16px 20px;margin-bottom:18px;box-shadow:0 8px 25px rgba(15,23,42,.08)}
+    .portal-profile-left{display:flex;align-items:center;gap:14px;min-width:0}.profile-avatar{width:68px;height:68px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.15);background:#e2e8f0}.profile-avatar.placeholder{display:flex;align-items:center;justify-content:center;font-size:26px}.portal-profile-name{font-size:19px;font-weight:800}.portal-profile-meta{font-size:13px;color:#64748b;margin-top:4px;word-break:break-word}.portal-badge{display:inline-block;background:#065f46;color:#fff;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800;margin-top:6px}.portal-actions{display:flex;gap:8px;flex-wrap:wrap}.profile-btn{background:#0f766e;color:#fff}.logout-btn{background:#334155;color:#fff}.profile-photo-preview{width:110px;height:110px;border-radius:50%;object-fit:cover;border:3px solid #e2e8f0;background:#f1f5f9}.profile-form-grid{display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center}.profile-upload-note{font-size:12px;color:#64748b;margin-top:7px}.scope-readonly{background:#f1f5f9;padding:10px;border-radius:10px;font-size:13px;color:#475569;margin:8px 0}.login-gate-note{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;padding:10px 12px;border-radius:10px;font-size:12px;margin-bottom:12px}
+    @media(max-width:700px){.portal-profile{align-items:flex-start;flex-direction:column}.portal-actions{width:100%}.profile-form-grid{grid-template-columns:1fr}.profile-photo-preview{width:90px;height:90px}}
+
+  </style>
+
+<style>
+.v2-btn{background:#7c3aed;color:#fff}.v2-modal{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:9999;display:none;padding:18px;overflow:auto}.v2-box{max-width:1050px;margin:30px auto;background:#fff;border-radius:20px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.25)}.v2-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.v2-tabs button{background:#e2e8f0;color:#334155}.v2-tabs button.active{background:#0f766e;color:#fff}.v2-panel{display:none}.v2-panel.active{display:block}.v2-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.v2-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px}.v2-table{width:100%;min-width:900px;border-collapse:collapse}.v2-table th,.v2-table td{padding:10px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:13px}.v2-table th{background:#f1f5f9}.v2-table-wrap{overflow:auto}.v2-note{font-size:12px;color:#64748b;margin:8px 0}.v2-danger{background:#dc2626;color:#fff}.v2-success{background:#059669;color:#fff}.v2-warning{background:#d97706;color:#fff}.v2-close{float:right;background:#e2e8f0}.notification-item{padding:10px 12px;border-radius:10px;background:#f8fafc;margin:8px 0;border-left:4px solid #0f766e}.analytics-big{font-size:28px;font-weight:800}.target-progress{height:12px;background:#e2e8f0;border-radius:999px;overflow:hidden}.target-progress>div{height:100%;background:#0f766e}
+</style>
+
+<!-- Responsive Qari Card Layout Upgrade -->
+<style id="responsive-qari-card-layout-v2">
+/* Cleaner professional card density */
+.qari-card-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:20px !important;
+  max-width:1600px;
+  margin:0 auto 24px;
+}
+.qari-work-card{min-width:0;}
+
+/* Large tablets / smaller laptops */
+@media(max-width:1250px){
+  .qari-card-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:18px !important;}
+}
+
+/* Tablet + mobile: always ONE clean card at a time */
+@media(max-width:900px){
+  .qari-card-grid{
+    grid-template-columns:minmax(0,1fr) !important;
+    gap:16px !important;
+    max-width:620px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .qari-work-card{
+    padding:16px !important;
+    border-radius:20px !important;
+    box-shadow:0 8px 24px rgba(15,23,42,.08) !important;
+  }
+}
+
+/* Phone-first polishing */
+@media(max-width:600px){
+  .quick-toolbar{margin:10px 0 14px !important;}
+  .quick-toolbar .hint{
+    width:100%;
+    line-height:1.45;
+    font-size:11px;
+    padding:9px 11px;
+    border-radius:12px;
+    background:#fffaf0;
+    border:1px solid #fde68a;
+  }
+  .qari-card-grid{gap:14px !important;padding:0 2px;}
+  .qari-work-card{padding:14px !important;border-radius:18px !important;}
+  .qari-head{gap:11px !important;align-items:flex-start !important;}
+  .qari-photo,.qari-photo-placeholder{width:68px !important;height:68px !important;flex:0 0 68px;}
+  .qari-photo-placeholder{font-size:30px !important;}
+  .qari-name{font-size:17px !important;line-height:1.25 !important;}
+  .qari-centre{font-size:12px !important;}
+  .qari-region{font-size:10px !important;}
+  .qari-contact{margin:11px 0 !important;gap:7px !important;}
+  .qari-contact a{padding:10px 6px !important;font-size:12px !important;}
+  .qari-stats{gap:7px !important;margin:10px 0 !important;}
+  .qstat{padding:9px 8px !important;border-radius:11px !important;}
+  .qstat b{font-size:16px !important;}
+  .quick-amount{gap:7px !important;margin-top:10px !important;}
+  .quick-amount input{padding:11px 9px !important;font-size:14px !important;}
+  .quick-amount button{padding:10px 11px !important;font-size:13px !important;}
+  .quick-presets{gap:6px !important;margin-top:8px !important;}
+  .quick-presets button{flex:1 1 calc(25% - 6px);padding:6px 5px !important;font-size:11px !important;}
+  .quick-bottom{gap:7px !important;margin-top:9px !important;}
+  .quick-bottom button{padding:10px 7px !important;font-size:12px !important;}
+  .quick-history{font-size:11px !important;}
+}
+</style>
+
+</head>
+<body class="portal-locked">
+  <div class="header"><button class="lang-btn" onclick="toggleLanguage()">اردو</button>
+    <small>🏆 LIVE TELETHON 2026</small>
+    <h1>QARI SAHIBAN PERFORMANCE DASHBOARD</h1>
+    <p>1 UNIT = ₹7,000 • Live Ranking • Daily & Overall Collection</p>
+  </div>
+
+  <div class="container">
+    <div id="portalProfileCard" class="portal-profile hidden">
+      <div class="portal-profile-left">
+        <img id="portalProfilePhoto" class="profile-avatar" alt="Profile Photo" onerror="this.style.display='none';document.getElementById('portalProfileFallback').style.display='flex'">
+        <div id="portalProfileFallback" class="profile-avatar placeholder" style="display:none">👤</div>
+        <div>
+          <div class="portal-profile-name" id="portalProfileName">Loading...</div>
+          <div class="portal-profile-meta" id="portalProfileEmail"></div>
+          <div class="portal-profile-meta" id="portalProfileScope"></div>
+          <div class="portal-badge" id="portalRoleBadge"></div>
+        </div>
+      </div>
+      <div class="portal-actions">
+        <button type="button" class="profile-btn" onclick="openProfileModal()">👤 My Profile</button>
+        <button type="button" class="logout-btn" onclick="logoutPortal()">↪ Logout</button>
+      </div>
+    </div>
+    <div class="filters">
+      <input id="searchInput" type="text" placeholder="Search Qari Sahab, Centre or Region..." oninput="renderDashboard()">
+      <select id="regionFilter" onchange="renderDashboard()"><option value="all">All Regions</option></select>
+      <input id="dateFilter" type="date" onchange="changeDate()" title="Select collection date"><button class="small-btn" onclick="setOverallDate()">Overall</button>
+      <button class="top3-btn" type="button" onclick="showTop3Poster()">🏆 Overall Top 3 Poster</button>
+      <button class="top3-btn" type="button" onclick="showTopWinnerPoster()">🥇 Winner Poster</button>
+      <button id="v2OpenBtn" class="v2-btn hidden" type="button" onclick="openV2()">⚙️ Management</button>
+      <button class="admin-btn" type="button" onclick="openAdmin()">🔐 Admin Panel</button>
+    </div>
+    <div class="date-note" id="dateLabel">Showing Overall Collection</div>
+
+    <div class="stats">
+      <div class="stat"><h3 id="collectionTitle">TOTAL COLLECTION</h3><div class="value" id="totalCollection">₹0</div></div>
+      <div class="stat"><h3>TOTAL QARI SAHIBAN</h3><div class="value" id="totalParticipants">0</div></div>
+      <div class="stat"><h3>TOTAL UNITS</h3><div class="value" id="totalUnits">0</div></div>
+    </div>
+    <div class="pro-section">
+      <h2 id="regionSummaryTitle">📊 Region Performance Summary</h2>
+      <div id="contactAlertsPanel" class="contact-alert-panel hidden"></div>
+      <div id="regionSummary" class="summary-grid"></div>
+    </div>
+    <div class="pro-section">
+      <h2 id="insightTitle">💡 Smart Insights</h2>
+      <div id="smartInsights" class="insight-grid"></div>
+    </div>
+    <div id="dashboardContent" style="text-align:center;padding:40px">Loading data...</div>
+  </div>
+
+  <div id="adminModal" class="modal hidden"><div class="modal-box" style="max-width:520px">
+    <h2>🔐 TELETHON 2026 Portal Login</h2><div class="login-gate-note">This is a private role-based portal. Login is required to view dashboard data.</div>
+    <div style="font-size:13px;color:#64748b;margin-bottom:12px">Login with your official administrator Email ID and Password.</div>
+    <label style="display:block;margin:8px 0 4px;font-weight:700">📧 Email ID</label>
+    <input id="adminEmail" type="email" placeholder="Enter registered Email ID" autocomplete="username">
+    <label style="display:block;margin:12px 0 4px;font-weight:700">🔑 Password</label>
+    <input id="adminPin" type="password" placeholder="Enter Password" autocomplete="current-password">
+          <label class="remember-login" style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;cursor:pointer;">
+            <input type="checkbox" id="rememberLogin">
+            <span>Remember Email & Password on this device</span>
+          </label>
+          <button type="button" onclick="clearSavedLogin()" style="margin-top:8px;background:none;border:none;color:#2563eb;text-decoration:underline;cursor:pointer;font-size:12px;">Forget saved login</button>
+
+    <div style="margin-top:10px"><button type="button" onclick="openForgotPassword()" style="background:none;border:none;color:#2563eb;text-decoration:underline;cursor:pointer;font-size:13px;padding:0">Forgot Password? Reset by Email OTP</button></div>
+    <div id="loginMessage" style="margin-top:10px;font-size:13px;font-weight:700"></div><div style="margin-top:10px;font-size:11px;color:#94a3b8">Use only the official Email ID assigned to your Region.</div>
+    <div class="poster-actions"><button class="admin-btn" onclick="loginAdmin()">Login</button><button class="close-btn" onclick="closeAdmin()">Close</button></div>
+  </div></div>
+
+  <div id="adminArea" class="modal hidden"><div class="modal-box">
+    <div class="modal-head"><div><h2>🔐 Admin Control Panel</h2><div id="adminIdentity" style="font-size:12px;color:#64748b;margin-top:4px"></div></div><button class="close-btn" onclick="closeAdminArea()">Close</button></div>
+
+    <div class="admin-card">
+      <h3>💰 Update Collection</h3>
+      <input id="adminSearch" class="admin-search" placeholder="🔎 Search Qari Sahab / Centre / Region..." oninput="populateParticipantSelect()">
+      <div id="adminCoordinatorInfo" style="font-size:12px;color:#64748b;margin:2px 0 8px"></div>
+        <select id="participantSelect"><option value="">Select Qari Sahab</option></select>
+      <input id="adminDate" type="date" title="Select collection date"><button class="small-btn" type="button" onclick="setAdminOverallDate()">Overall</button>
+      <input id="amountInput" type="number" min="0" placeholder="Enter amount for selected date">
+      <button class="update-btn" onclick="saveAmount()">Update Amount</button>
+      <div style="font-size:12px;color:#64748b;margin-top:10px">Date select karne par amount us particular date ke liye save hoga aur overall total automatically update hoga.</div>
+    </div>
+
+    <div class="admin-card password-card">
+      <h3>🔐 Change Admin Password</h3>
+      <div style="font-size:12px;color:#92400e;margin-bottom:10px">Change the admin password directly from this software. Your new password will be saved securely in Script Properties.</div>
+      <div class="password-grid">
+        <div><label>Current Password</label><input id="currentPassword" type="password" placeholder="Current password"></div>
+        <div><label>New Password</label><input id="newPassword" type="password" placeholder="Minimum 8 characters"></div>
+        <div><label>Confirm New Password</label><input id="confirmPassword" type="password" placeholder="Re-enter new password"></div>
+      </div>
+      <div class="poster-actions">
+        <button onclick="changeAdminPassword()">🔐 Update Password</button>
+        <button class="close-btn" type="button" onclick="togglePasswordFields()">👁 Show / Hide</button>
+      </div>
+      <div id="passwordMessage" class="password-msg"></div>
+    </div>
+
+    <div class="admin-card">
+      <h3>📷 Qari Sahab Photo</h3>
+      <div class="qari-photo-box">
+        <div><img id="qariPhotoPreview" class="qari-photo-admin" alt="Qari Photo" style="display:none"><div id="qariPhotoPlaceholder" class="qari-photo-admin" style="display:flex;align-items:center;justify-content:center;font-size:36px">👤</div></div>
+        <div>
+          <input id="qariPhotoFile" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewQariPhoto(this)">
+          <div class="poster-actions"><button class="update-btn" type="button" onclick="uploadSelectedQariPhoto()">📷 Upload / Change Photo</button><button class="delete-btn" type="button" onclick="removeSelectedQariPhoto()">🗑 Remove Photo</button></div>
+          <div class="qari-photo-status" id="qariPhotoMessage">Select a Qari Sahab above, then upload their photo. Region Admin can manage only their permitted Qari Sahiban.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h3>✏️ Correct / Delete Selected Date Entry</h3>
+      <div style="font-size:12px;color:#64748b;margin-bottom:8px">Use the same Qari + Date above. Update corrects the amount; Delete removes that date entry and adjusts overall total.</div>
+      <button class="delete-btn" onclick="deleteSelectedEntry()">🗑 Delete Selected Date Entry</button>
+      <button class="history-btn" onclick="showQariHistory()">📅 View Qari History</button> <button class="v2-danger" onclick="trashSelectedQari()">🗑 Move Qari to Trash</button>
+    </div>
+
+    <div class="admin-card" id="auditCard">
+      <h3>📜 Activity / Audit Log</h3>
+      <div id="auditLog" class="audit-log">Login to load activity...</div>
+      <div class="poster-actions"><button class="close-btn" onclick="loadAuditLog()">Refresh Audit Log</button></div>
+    </div>
+
+    <div class="admin-card">
+      <h3>➕ Add New Qari Sahab</h3>
+      <select id="newRegion"><option value="">Select Region</option></select>
+      <input id="newName" placeholder="Qari Sahab Name">
+      <input id="newCentre" placeholder="Jamia / Centre">
+      <button class="update-btn" onclick="addNewParticipant()">Add Participant</button>
+    </div>
+
+    <div class="admin-card">
+      <h3>⚠️ Danger Zone</h3>
+      <button class="danger-btn" onclick="resetAll()">Reset All Amounts to Zero</button>
+    </div>
+  </div></div>
+
+  <div id="profileModal" class="modal hidden"><div class="modal-box" style="max-width:650px">
+    <div class="modal-head"><div><h2>👤 My Coordinator Profile</h2><div style="font-size:12px;color:#64748b">Your profile is linked to your official login account.</div></div><button class="close-btn" onclick="closeProfileModal()">Close</button></div>
+    <div class="profile-form-grid">
+      <div style="text-align:center"><img id="profilePhotoPreview" class="profile-photo-preview" alt="Profile Photo"><div class="profile-upload-note">Upload JPG / PNG under 5 MB</div></div>
+      <div>
+        <label style="font-weight:700;font-size:13px">Profile Name</label><input id="profileNameInput" placeholder="Coordinator Name">
+        <label style="font-weight:700;font-size:13px">Official Email ID</label><input id="profileEmailInput" readonly>
+        <label style="font-weight:700;font-size:13px">Mobile Number</label><input id="profileMobileInput" placeholder="Mobile Number">
+        <div class="scope-readonly" id="profileScopeInfo"></div>
+        <input id="profilePhotoFile" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewProfilePhoto(this)">
+        <div class="poster-actions"><button class="profile-btn" type="button" onclick="saveMyProfile()">💾 Save Profile</button><button class="update-btn" type="button" onclick="uploadProfilePhoto()">📷 Upload Photo</button></div>
+        <div id="profileMessage" style="font-size:12px;font-weight:700;margin-top:8px"></div>
+      </div>
+    </div>
+  </div></div>
+
+  <div id="historyModal" class="modal hidden"><div class="modal-box" style="max-width:650px">
+    <div class="modal-head"><h2>📅 Qari Collection History</h2><button class="close-btn" onclick="closeHistory()">Close</button></div>
+    <div id="historyContent">Loading...</div>
+  </div></div>
+
+  <div id="posterModal" class="modal hidden"><div class="modal-box">
+    <div class="modal-head"><h2>🏆 Winner Poster</h2><button class="close-btn" onclick="closePoster()">Close</button></div>
+    <div id="winnerPoster">
+      <div style="font-size:60px">🏆</div><div style="letter-spacing:3px">TELETHON 2026</div><h1>WINNER</h1>
+      <div id="winnerPhotoPlaceholder" class="winner-photo-placeholder">👤</div><img id="winnerPhoto" class="winner-photo" crossorigin="anonymous" alt="Winner Photo"><div class="poster-date" id="winnerDateLabel">Overall Collection</div><h2 id="posterName">Qari Sahab</h2><h3 id="posterRegion">Region</h3><div id="posterCentre">Centre</div><div class="posterAmount" id="posterAmount">₹0</div>
+    </div>
+    <div class="poster-actions"><button class="update-btn" onclick="downloadElement('winnerPoster','Winner_Telethon_2026.png')">⬇ Download Poster</button></div>
+  </div></div>
+
+  <div id="top3Modal" class="modal hidden"><div class="modal-box">
+    <div class="modal-head"><h2>🏆 Top 3 Poster</h2><button class="close-btn" onclick="closeTop3()">Close</button></div>
+    <div id="top3Poster">
+      <div style="font-size:68px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.3))">🏆</div><div class="poster-subtitle">TELETHON 2026</div><h1 id="top3Title">OVERALL TOP 3</h1><div class="poster-date" id="top3DateLabel">Overall Collection</div>
+      <div class="top3-list" id="top3List"></div>
+    </div>
+    <div class="poster-actions"><button class="update-btn" onclick="downloadElement('top3Poster','Top_3_Telethon_2026.png')">⬇ Download Top 3 Poster</button></div>
+  </div></div>
+
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script>
+    let ACTIVE_ADMIN_PASSWORD="";
+    const UNIT_RATE=7000;
+    let DATA=[];
+    let currentDate='all';
+
+    function money(v){return '₹'+(Number(v)||0).toLocaleString('en-IN')}
+    function formatDateLabel(s){if(s==='all')return 'Overall Collection';return new Date(s+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}
+    function escapeHtml(t){return String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
+    function escAttr(t){return String(t??'').replace(/'/g,"\\'")}
+
+    function buildDates(){
+      // Calendar inputs replace the old fixed August/September date list.
+      const main=document.getElementById('dateFilter'), admin=document.getElementById('adminDate');
+      const today=new Date().toISOString().slice(0,10);
+      if(main && !main.value) main.value=today;
+      if(admin && !admin.value) admin.value=today;
+    }
+    function selectedDateValue(){const v=(document.getElementById('dateFilter')||{}).value||'';return v||'all';}
+    function setOverallDate(){const main=document.getElementById('dateFilter');if(main){main.value='';changeDate();}}
+    function setAdminOverallDate(){const admin=document.getElementById('adminDate');if(admin)admin.value='';}
+
+    function loadData(){
+      currentDate=selectedDateValue();
+      google.script.run.withSuccessHandler(res=>{
+        DATA=Array.isArray(res)?res:[];
+        populateFilters(); populateParticipantSelect(); if(window.loadQariTargetOptions)loadQariTargetOptions(); renderDashboard();
+      }).withFailureHandler(err=>{
+        document.getElementById('dashboardContent').innerHTML='<div style="color:#dc2626;padding:30px">Error: '+escapeHtml(err.message||err)+'</div>';
+      }).getData(currentDate);
+    }
+/* removed duplicate function */
+
+
+
+
+
+
+    function populateFilters(){
+      const rf=document.getElementById('regionFilter'), old=rf.value;
+      const regions=[...new Set(DATA.map(x=>x.region).filter(Boolean))].sort();
+      rf.innerHTML='<option value="all">All Regions</option>';
+      regions.forEach(r=>rf.add(new Option(r,r)));
+      if([...rf.options].some(o=>o.value===old))rf.value=old;
+
+      const nr=document.getElementById('newRegion'), oldN=nr.value;
+      nr.innerHTML='<option value="">Select Region</option>';
+      regions.forEach(r=>nr.add(new Option(r,r)));
+      if([...nr.options].some(o=>o.value===oldN))nr.value=oldN;
+    }
+
+    
+    function normAccessValue(v){
+      return String(v||'').toLowerCase().trim().replace(/[\s_\-\/&()]+/g,'');
+    }
+
+    function normPartAccess(v){
+      const s=String(v||'').toLowerCase().trim();
+      if(!s || s==='main') return 'main';
+      const m=s.match(/\bpart\s*0*([0-9]+)\b/i)||s.match(/^0*([0-9]+)$/);
+      return m?'part'+Number(m[1]):s.replace(/[\s_\-\/()]+/g,'');
+    }
+
+    function clientParticipantAllowed_(x){
+      if(!ADMIN_SESSION || !ADMIN_SESSION.user) return false;
+      const u=ADMIN_SESSION.user;
+      if(u.role==='SUPER_ADMIN') return true;
+
+      const regions=(u.regions||[]).map(normAccessValue);
+      const parts=(u.parts||[]).map(normPartAccess);
+      const region=normAccessValue(x.regionKey||x.region||'');
+      const part=normPartAccess(x.part||'');
+
+      if(!regions.includes(region)) return false;
+      if(parts.length && !parts.includes(part)) return false;
+      return true;
+    }
+/* removed duplicate function */
+
+
+
+
+
+
+
+
+
+
+
+    function renderDashboard(){
+      const search=document.getElementById('searchInput').value.toLowerCase().trim();
+      const region=document.getElementById('regionFilter').value;
+      const filtered=DATA.filter(x=>{
+        const text=[x.name,x.centre,x.region,x.part].join(' ').toLowerCase();
+        return text.includes(search)&&(region==='all'||x.region===region);
+      }).sort((a,b)=>(b.amount||0)-(a.amount||0));
+
+      const total=filtered.reduce((s,x)=>s+(Number(x.amount)||0),0);
+      document.getElementById('collectionTitle').textContent=currentDate==='all'?'TOTAL COLLECTION':'COLLECTION FOR SELECTED DATE';
+      document.getElementById('dateLabel').textContent='Showing '+formatDateLabel(currentDate);
+      document.getElementById('totalCollection').textContent=money(total);
+      document.getElementById('totalParticipants').textContent=filtered.length;
+      document.getElementById('totalUnits').textContent=(total/UNIT_RATE).toFixed(2);
+
+      const grouped={};filtered.forEach(x=>(grouped[x.region]??=[]).push(x));
+      let html='';
+      Object.keys(grouped).sort().forEach(regionName=>{
+        const arr=grouped[regionName].sort((a,b)=>(b.amount||0)-(a.amount||0));
+        const first=arr[0];
+        html+=`<div class="region-section"><div class="region-title"><div><h2>${escapeHtml(regionName)}</h2><div style="font-size:12px;opacity:.9">${currentDate==='all'?'Overall Ranking':formatDateLabel(currentDate)}</div></div><div class="coordinator">${first.coordinator?'Coordinator: '+escapeHtml(first.coordinator):''}${first.phone?'<br>📱 '+escapeHtml(first.phone):''}<br><button class="top3-btn" style="margin-top:7px;padding:7px 11px" onclick="showTop3Poster('${escAttr(regionName)}')">🏆 Top 3 Poster</button> <button class="top3-btn" style="margin-top:7px;padding:7px 11px" onclick="showTopWinnerPoster('${escAttr(regionName)}')">🥇 Winner Poster</button></div></div><div class="table-box"><table><thead><tr><th>Rank</th><th>Qari Sahab</th><th>Jamia / Centre</th><th>Amount</th><th>Units</th><th>Poster</th></tr></thead><tbody>`;
+        arr.forEach((x,i)=>{
+          const winner=i===0&&Number(x.amount)>0;
+          const medal=['🥇','🥈','🥉'][i]||'#'+(i+1);
+          html+=`<tr class="${winner?'winner':''}"><td class="rank">${medal}</td><td><strong>${escapeHtml(x.name)}</strong></td><td>${escapeHtml(x.centre)}</td><td class="amount">${money(x.amount)}</td><td>${((Number(x.amount)||0)/UNIT_RATE).toFixed(2)}</td><td>${winner?`<button class="download-btn" onclick="showWinnerPoster('${escAttr(x.id)}')">Winner Poster</button>`:'-'}</td></tr>`;
+        });
+        html+='</tbody></table></div></div>';
+      });
+      document.getElementById('dashboardContent').innerHTML=html||'<div class="stat">No participants found.</div>';
+    }
+/* removed duplicate function */
+
+/* removed duplicate function */
+/* removed duplicate function */
+
+
+
+
+
+
+
+
+
+
+
+
+/* removed duplicate function */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function clearSavedLogin(){
+      try{
+        localStorage.removeItem('telethon2026_saved_login');
+        const remember = document.getElementById('rememberLogin');
+        if(remember) remember.checked = false;
+      }catch(e){}
+    }
+/* removed duplicate function */
+
+
+
+
+
+
+
+/* removed duplicate function */
+    document.addEventListener('DOMContentLoaded',()=>{
+      ['adminEmail','adminPin'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el) el.addEventListener('keydown',e=>{if(e.key==='Enter')loginAdmin()});
+      });
+    });
+/* removed duplicate function */
+
+
+
+
+
+
+
+
+
+
+
+
+/* removed duplicate function */
+
+
+
+
+
+
+
+
+/* removed duplicate function */
+
+
+
+
+
+
+    function setWinnerPoster(x,title){
+      if(!x)return alert('No winner found for the selected filter/date.');
+      document.querySelector('#posterModal .modal-head h2').textContent='🏆 '+(title||'Winner Poster');
+      document.getElementById('posterName').textContent=x.name||'Qari Sahab';
+      document.getElementById('winnerDateLabel').textContent=currentDate==='all'?'OVERALL COLLECTION':formatDateLabel(currentDate);
+      document.getElementById('posterRegion').textContent=[x.region,x.part].filter(Boolean).join(' — ');
+      document.getElementById('posterCentre').textContent=x.centre||'';
+      document.getElementById('posterAmount').textContent=money(x.amount);
+      const img=document.getElementById('winnerPhoto'), ph=document.getElementById('winnerPhotoPlaceholder');
+      img.removeAttribute('src');img.style.display='none';ph.style.display='flex';
+      document.getElementById('posterModal').classList.remove('hidden');
+      if(x.photoUrl){
+        getPosterPhotoData(x,function(dataUrl){
+          img.src=dataUrl||x.photoUrl;
+          img.style.display='block';ph.style.display='none';
+        });
+      }
+    }
+    function showWinnerPoster(id){ const x=DATA.find(a=>String(a.id)===String(id)); setWinnerPoster(x,'Winner Poster'); }
+    function showTopWinnerPoster(region=''){
+      const selectedRegion=document.getElementById('regionFilter')?.value||'all';
+      const scope=region|| (selectedRegion!=='all'?selectedRegion:'');
+      const list=DATA.filter(x=>(!scope||x.region===scope)&&Number(x.amount)>0).slice().sort((a,b)=>(b.amount||0)-(a.amount||0));
+      if(!list.length)return alert('No winner found with collection amount for this selection.');
+      const label=scope?scope+' Winner':(currentDate==='all'?'Overall Winner':formatDateLabel(currentDate)+' Winner');
+      setWinnerPoster(list[0],label);
+    }
+    function closePoster(){document.getElementById('posterModal').classList.add('hidden')}
+
+    function showTop3Poster(region=''){
+      const selectedRegion=document.getElementById('regionFilter')?.value||'all';
+      const scope=region|| (selectedRegion!=='all'?selectedRegion:'');
+      let list=DATA.filter(x=>!scope||x.region===scope).slice().sort((a,b)=>(b.amount||0)-(a.amount||0)).slice(0,3);
+      if(!list.length)return alert('No participants found.');
+      const medals=['🥇','🥈','🥉'];
+      document.getElementById('top3Title').textContent=(scope?scope.toUpperCase()+' TOP 3':'OVERALL TOP 3');
+      document.getElementById('top3DateLabel').textContent=currentDate==='all'?'OVERALL COLLECTION • '+(scope||'ALL REGIONS'):formatDateLabel(currentDate);
+      document.getElementById('top3List').innerHTML=list.map((x,i)=>{
+        const regionText=[x.region,x.part].filter(Boolean).join(' — ');
+        const photo=x.photoUrl?`<img id="top3Photo_${i}" class="top3-photo" src="${escapeHtml(x.photoUrl)}" alt="${escapeHtml(x.name)}">`:`<div class="top3-photo" style="display:flex;align-items:center;justify-content:center;font-size:48px">👤</div>`;
+        return `<div class="top3-card"><div class="medal">${medals[i]}</div>${photo}<div class="top3-name">${escapeHtml(x.name)}</div><div class="top3-region">📍 ${escapeHtml(regionText||'Region')}</div><div class="top3-centre">${escapeHtml(x.centre||'')}</div><div class="top3-amount">${money(x.amount)}</div></div>`;
+      }).join('');
+      document.getElementById('top3Modal').classList.remove('hidden');
+      list.forEach((x,i)=>{
+        if(!x.photoUrl) return;
+        getPosterPhotoData(x,function(dataUrl){
+          const img=document.getElementById('top3Photo_'+i);
+          if(img && dataUrl) img.src=dataUrl;
+        });
+      });
+    }
+    function closeTop3(){document.getElementById('top3Modal').classList.add('hidden')}
+
+    function downloadElement(id,file){
+      const el=document.getElementById(id);
+      const imgs=[...el.querySelectorAll('img')];
+      Promise.all(imgs.map(img=>img.complete?Promise.resolve():new Promise(resolve=>{img.onload=img.onerror=resolve;}))).then(()=>{
+        return html2canvas(el,{scale:2,backgroundColor:null,useCORS:false,allowTaint:false,imageTimeout:15000});
+      }).then(canvas=>{
+        const a=document.createElement('a');a.download=file;a.href=canvas.toDataURL('image/png');a.click();
+      }).catch(err=>alert('Poster download error: '+(err.message||err)));
+    }
+
+    function selectedQariForPhoto(){
+      const id=document.getElementById('participantSelect')?.value||'';
+      return DATA.find(x=>String(x.id)===String(id))||null;
+    }
+    function getPosterPhotoData(x,callback){
+      if(!x || !x.id || !ADMIN_SESSION || !ADMIN_SESSION.token){ callback(''); return; }
+      google.script.run.withSuccessHandler(r=>callback((r&&r.dataUrl)||''))
+        .withFailureHandler(()=>callback(''))
+        .getQariPhotoDataUrl(ADMIN_SESSION.token,x.id);
+    }
+    function refreshQariPhotoPreview(){
+      const x=selectedQariForPhoto(),img=document.getElementById('qariPhotoPreview'),ph=document.getElementById('qariPhotoPlaceholder'),msg=document.getElementById('qariPhotoMessage');
+      if(!img||!ph)return;
+      if(!x){img.style.display='none';ph.style.display='flex';if(msg)msg.textContent='Select a Qari Sahab above, then upload their photo.';return;}
+      if(x.photoUrl){img.src=x.photoUrl;img.style.display='block';ph.style.display='none';}else{img.removeAttribute('src');img.style.display='none';ph.style.display='flex';}
+      if(msg)msg.textContent=x.photoUrl?'Current photo loaded for '+x.name+'.':'No photo uploaded yet for '+x.name+'.';
+    }
+    function previewQariPhoto(input){
+      const f=input.files&&input.files[0];if(!f)return;if(f.size>5*1024*1024){alert('Image must be under 5 MB.');input.value='';return;}
+      const r=new FileReader();r.onload=e=>{const img=document.getElementById('qariPhotoPreview'),ph=document.getElementById('qariPhotoPlaceholder');img.src=e.target.result;img.style.display='block';ph.style.display='none';};r.readAsDataURL(f);
+    }
+    function uploadSelectedQariPhoto(){
+      const x=selectedQariForPhoto(),f=document.getElementById('qariPhotoFile')?.files?.[0],msg=document.getElementById('qariPhotoMessage');
+      if(!x)return alert('Please select Qari Sahab first.');if(!f)return alert('Please choose a photo first.');if(f.size>5*1024*1024)return alert('Image must be under 5 MB.');
+      msg.textContent='Uploading photo...';
+      const r=new FileReader();r.onload=e=>google.script.run.withSuccessHandler(res=>{x.photoUrl=res.photoUrl||'';document.getElementById('qariPhotoFile').value='';refreshQariPhotoPreview();msg.textContent='Photo uploaded successfully. It will now appear on Winner and Top 3 posters.';}).withFailureHandler(err=>{msg.textContent='Upload error: '+(err.message||err);}).uploadQariPhoto(ADMIN_SESSION.token,x.id,e.target.result,f.name,f.type);r.readAsDataURL(f);
+    }
+    function removeSelectedQariPhoto(){
+      const x=selectedQariForPhoto(),msg=document.getElementById('qariPhotoMessage');if(!x)return alert('Please select Qari Sahab first.');if(!x.photoUrl)return alert('This Qari Sahab has no uploaded photo.');if(!confirm('Remove photo for '+x.name+'?'))return;
+      google.script.run.withSuccessHandler(()=>{x.photoUrl='';refreshQariPhotoPreview();msg.textContent='Photo removed successfully.';}).withFailureHandler(err=>alert('Error: '+(err.message||err))).removeQariPhoto(ADMIN_SESSION.token,x.id);
+    }
+    const _oldPopulateParticipantSelect=window.populateParticipantSelect;
+    window.populateParticipantSelect=function(){const r=_oldPopulateParticipantSelect&&_oldPopulateParticipantSelect.apply(this,arguments);setTimeout(refreshQariPhotoPreview,100);return r;};
+    document.addEventListener('change',e=>{if(e.target&&e.target.id==='participantSelect')refreshQariPhotoPreview();});
+
+    buildDates();
+    // Final portal loads no data until an authenticated user session exists.
+    // Auto-refresh disabled intentionally: it was rebuilding the card DOM while admins were typing, causing Edit/History sections to close unexpectedly. Data refreshes after successful actions and manual filter/date changes.
+
+
+    /* ===== SECURE ADMIN PASSWORD MANAGEMENT ===== */
+    function togglePasswordFields(){
+      ['currentPassword','newPassword','confirmPassword'].forEach(id=>{
+        const el=document.getElementById(id);
+        el.type=el.type==='password'?'text':'password';
+      });
+    }
+
+    function changeAdminPassword(){
+      const current=document.getElementById('currentPassword').value;
+      const next=document.getElementById('newPassword').value;
+      const confirmNext=document.getElementById('confirmPassword').value;
+      const msg=document.getElementById('passwordMessage');
+
+      msg.textContent='';
+      if(!current || !next || !confirmNext){
+        msg.textContent='Please fill all password fields.';
+        msg.style.color='#dc2626';
+        return;
+      }
+      if(next.length<8){
+        msg.textContent='New password must be at least 8 characters.';
+        msg.style.color='#dc2626';
+        return;
+      }
+      if(next!==confirmNext){
+        msg.textContent='New password and confirmation do not match.';
+        msg.style.color='#dc2626';
+        return;
+      }
+      if(current===next){
+        msg.textContent='New password must be different from current password.';
+        msg.style.color='#dc2626';
+        return;
+      }
+
+      if(!confirm('Are you sure you want to change the Admin Password? You will need the new password next time.')) return;
+
+      google.script.run.withSuccessHandler(res=>{
+        msg.textContent='✓ Password changed successfully. New password is now active.';
+        msg.style.color='#047857';
+        ['currentPassword','newPassword','confirmPassword'].forEach(id=>document.getElementById(id).value='');
+
+        // Keep the optional remembered-login value in sync, otherwise the old
+        // password would be auto-filled on the next visit.
+        try{
+          const saved=JSON.parse(localStorage.getItem('telethon2026_saved_login')||'{}');
+          const currentEmail=(ADMIN_SESSION&&ADMIN_SESSION.user&&ADMIN_SESSION.user.email)||'';
+          if(saved.email && String(saved.email).toLowerCase()===String(currentEmail).toLowerCase() && saved.password){
+            saved.password=next;
+            localStorage.setItem('telethon2026_saved_login',JSON.stringify(saved));
+          }
+          const loginPassword=document.getElementById('adminPin');
+          if(loginPassword) loginPassword.value=next;
+        }catch(e){}
+        /* session remains active; password is updated securely on backend */
+      }).withFailureHandler(err=>{
+        msg.textContent='Error: '+(err.message||err);
+        msg.style.color='#dc2626';
+      }).changeAdminPassword(getAdminPassword(),current,next);
+    }
+
+    /* ===== PROFESSIONAL UPGRADE LOGIC ===== */
+    let UI_LANG='en';
+    const TRANSLATIONS={
+      en:{title:'QARI SAHIBAN PERFORMANCE DASHBOARD',search:'Search Qari Sahab, Centre or Region...',summary:'📊 Region Performance Summary',insights:'💡 Smart Insights'},
+      ur:{title:'قاری صاحبان کارکردگی ڈیش بورڈ',search:'قاری صاحب، مرکز یا ریجن تلاش کریں...',summary:'📊 ریجن کارکردگی خلاصہ',insights:'💡 اہم معلومات'}
+    };
+
+    function toggleLanguage(){
+      UI_LANG=UI_LANG==='en'?'ur':'en';
+      document.body.classList.toggle('rtl',UI_LANG==='ur');
+      document.querySelector('.lang-btn').textContent=UI_LANG==='en'?'اردو':'English';
+      document.querySelector('.header h1').textContent=TRANSLATIONS[UI_LANG].title;
+      document.getElementById('searchInput').placeholder=TRANSLATIONS[UI_LANG].search;
+      document.getElementById('regionSummaryTitle').textContent=TRANSLATIONS[UI_LANG].summary;
+      document.getElementById('insightTitle').textContent=TRANSLATIONS[UI_LANG].insights;
+    }
+
+    function renderProfessionalSummary(){
+      const list=DATA||[];
+      const by={};
+      list.forEach(x=>{if(!by[x.region])by[x.region]={amount:0,count:0};by[x.region].amount+=(Number(x.amount)||0);by[x.region].count++});
+      const ranked=Object.entries(by).sort((a,b)=>b[1].amount-a[1].amount);
+      document.getElementById('regionSummary').innerHTML=ranked.map(([r,v],i)=>
+        `<div class="summary-card"><div>${i+1}. ${escapeHtml(r)}</div><b>${money(v.amount)}</b><small>${v.count} Qari Sahiban • ${(v.amount/UNIT_RATE).toFixed(2)} Units</small></div>`).join('')||'<div>No data</div>';
+
+      const sorted=list.slice().sort((a,b)=>(b.amount||0)-(a.amount||0));
+      const top=sorted[0];
+      const zero=list.filter(x=>(Number(x.amount)||0)===0).length;
+      const near=list.filter(x=>(Number(x.amount)||0)>0).map(x=>({...x,need:UNIT_RATE-(Number(x.amount)%UNIT_RATE||UNIT_RATE)})).sort((a,b)=>a.need-b.need)[0];
+      document.getElementById('smartInsights').innerHTML=
+        `<div class="insight-card">🔥 Top Performer<b>${top?escapeHtml(top.name)+' — '+money(top.amount):'No data'}</b></div>
+         <div class="insight-card">⚠️ No Collection<b>${zero} Qari Sahiban</b></div>
+         <div class="insight-card">🎯 Closest to Next Unit<b>${near?escapeHtml(near.name)+' • Needs '+money(near.need):'No data'}</b></div>`;
+    }
+
+    const _originalRenderDashboard=renderDashboard;
+    renderDashboard=function(){_originalRenderDashboard();renderProfessionalSummary();};
+
+    function getAdminPassword(){
+      if(!ADMIN_SESSION || !ADMIN_SESSION.token) throw new Error('Please login to Admin Panel first.');
+      return ADMIN_SESSION.token;
+    }
+/* removed duplicate function */
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function loadAuditLog(){
+      // Audit log is a Super Admin-only monitoring tool.
+      if(!ADMIN_SESSION || !ADMIN_SESSION.user || ADMIN_SESSION.user.role!=='SUPER_ADMIN') return;
+      google.script.run.withSuccessHandler(rows=>{
+        document.getElementById('auditLog').innerHTML=(rows||[]).map(x=>
+          `<div class="audit-row"><b>${escapeHtml(x.action)}</b> — ${escapeHtml(x.name||'System')}<br>
+          <small>${escapeHtml(x.timestamp)} | ${escapeHtml(x.date||'')} | ${money(x.oldAmount)} → ${money(x.newAmount)}<br>${escapeHtml(x.details||'')}</small></div>`
+        ).join('')||'No activity yet.';
+      }).withFailureHandler(e=>{document.getElementById('auditLog').textContent='Could not load audit log: '+(e.message||e)})
+        .getAuditLog(getAdminPassword(),100);
+    }
+
+    function showQariHistory(){
+      const id=document.getElementById('participantSelect').value;
+      if(!id)return alert('Please select Qari Sahab.');
+      const p=DATA.find(x=>String(x.id)===String(id));
+      document.getElementById('historyModal').classList.remove('hidden');
+      document.getElementById('historyContent').innerHTML='Loading...';
+      google.script.run.withSuccessHandler(rows=>{
+        document.getElementById('historyContent').innerHTML=
+          `<h3>${escapeHtml(p?p.name:'Qari Sahab')}</h3>
+          <table class="history-table"><thead><tr><th>Date</th><th>Amount</th></tr></thead><tbody>`+
+          (rows||[]).map(x=>`<tr><td>${escapeHtml(x.date)}</td><td class="amount">${money(x.amount)}</td></tr>`).join('')+
+          '</tbody></table>';
+      }).withFailureHandler(e=>{document.getElementById('historyContent').textContent='Error: '+(e.message||e)})
+        .getParticipantHistory(id,getAdminPassword());
+    }
+    function closeHistory(){document.getElementById('historyModal').classList.add('hidden');}
+
+    let ADMIN_SESSION=null;
+
+    function applyAdminRegionFilter(){
+      if(!ADMIN_SESSION || !ADMIN_SESSION.user) return;
+      const u=ADMIN_SESSION.user;
+      if(u.role==='SUPER_ADMIN') return;
+
+      const allowed=u.regions||[];
+      const regionFilter=document.getElementById('regionFilter');
+      if(regionFilter){
+        [...regionFilter.options].forEach(opt=>{
+          if(opt.value==='all') return;
+          const ok=allowed.some(a=>String(a).toLowerCase()===String(opt.value).toLowerCase());
+          if(!ok) opt.remove();
+        });
+        if(allowed.length===1){
+          const match=[...regionFilter.options].find(o=>String(o.value).toLowerCase()===String(allowed[0]).toLowerCase());
+          if(match) regionFilter.value=match.value;
+        }
+      }
+
+      // Do not apply a second strict filter here.
+      // Backend getAdminData already sends only the permitted Qari Sahiban.
+      // A second filter previously caused Part 1 / Part 2 accounts to show empty lists.
+      if(typeof populateParticipantSelect==='function') populateParticipantSelect();
+    }
+
+    // Reload admin participant data securely according to role
+    function populateParticipantSelect(){
+      if(!ADMIN_SESSION || !ADMIN_SESSION.token) return;
+
+      const query=(document.getElementById('adminSearch')?.value||'').toLowerCase().trim();
+
+      google.script.run.withSuccessHandler(res=>{
+        // Backend is authoritative and already applies strict Region + Part access.
+        // Do NOT re-filter here; sheet RegionKey values can be technical keys like ajmer1/delhi2.
+        const rows=Array.isArray(res)?res:(res?.participants||[]);
+
+        // Logged-in Region Admin sees ONLY permitted Qari Sahiban everywhere
+        window.DATA=rows;
+
+        const c=res?.coordinator||{};
+        const ci=document.getElementById('adminCoordinatorInfo');
+        if(ci){
+          ci.textContent=(c.name?'Coordinator: '+c.name+(c.mobile?' | '+c.mobile:''):'');
+        }
+
+        const sel=document.getElementById('participantSelect');
+        if(!sel) return;
+
+        const selected=sel.value;
+        const list=rows.filter(x=>{
+          const text=[x.name,x.centre,x.region,x.part].join(' ').toLowerCase();
+          return text.includes(query);
+        }).sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+
+        sel.innerHTML='<option value="">Select Qari Sahab'+(query?' ('+list.length+' found)':(rows.length?' ('+rows.length+' available)':' — No Qari found'))+'</option>';
+
+        list.forEach(x=>{
+          const label=x.name+' — '+x.centre+
+            (x.region?' ('+x.region+(x.part&&x.part!=='Main'?' '+x.part:'')+')':'');
+          sel.add(new Option(label,x.id));
+        });
+
+        if([...sel.options].some(o=>o.value===selected)) sel.value=selected;
+
+        if(typeof populateFilters==='function') populateFilters();
+        if(typeof renderDashboard==='function') renderDashboard();
+
+      }).withFailureHandler(e=>{
+        console.error(e);
+        const sel=document.getElementById('participantSelect');
+        if(sel) sel.innerHTML='<option value="">Error loading Qari Sahiban</option>';
+        alert('Qari Sahiban could not be loaded: '+(e.message||e));
+      }).getAdminData(
+        document.getElementById('dateFilter')?.value||'all',
+        ADMIN_SESSION.token
+      );
+    };
+/* removed duplicate function */
+
+
+
+
+
+
+
+
+  
+document.addEventListener('DOMContentLoaded', function(){
+  loadSavedLogin();
+});
+
+    /* =========================================================
+       FINAL PRIVATE PORTAL CLIENT LAYER
+       Login first -> role-filtered dashboard -> private profile
+       ========================================================= */
+    let PORTAL_PROFILE=null;
+    let PORTAL_LOADING=false;
+
+    function portalScopeText(user){
+      if(!user) return '';
+      if(user.role==='SUPER_ADMIN') return 'All Regions • Super Admin Access';
+      const r=(user.regions||[]).join(' & ');
+      const p=(user.parts&&user.parts.length)?' • '+user.parts.join(' & '):'';
+      return r+p;
+    }
+
+    function showPortalProfile(profile,user){
+      PORTAL_PROFILE=profile||{};
+      const card=document.getElementById('portalProfileCard');
+      card.classList.remove('hidden');
+      document.getElementById('portalProfileName').textContent=PORTAL_PROFILE.name||user?.name||'Coordinator';
+      document.getElementById('portalProfileEmail').textContent=PORTAL_PROFILE.email||user?.email||'';
+      document.getElementById('portalProfileScope').textContent='📍 '+portalScopeText(user);
+      document.getElementById('portalRoleBadge').textContent=user?.role==='SUPER_ADMIN'?'👑 SUPER ADMIN':'📊 REGION COORDINATOR PORTAL';
+      const img=document.getElementById('portalProfilePhoto'), fallback=document.getElementById('portalProfileFallback');
+      if(PORTAL_PROFILE.photoUrl){ img.src=PORTAL_PROFILE.photoUrl; img.style.display='block'; fallback.style.display='none'; }
+      else { img.removeAttribute('src'); img.style.display='none'; fallback.style.display='flex'; }
+    }
+
+    function applyPortalScopeUI(user){
+      const isSuper=user && user.role==='SUPER_ADMIN';
+      const managementBtn=document.getElementById('v2OpenBtn');
+      if(managementBtn) managementBtn.classList.toggle('hidden',!isSuper);
+      document.getElementById('regionSummaryTitle').textContent=isSuper?'📊 Region Performance Summary':'📊 My Region Performance Summary';
+      document.getElementById('insightTitle').textContent=isSuper?'💡 Smart Insights':'💡 My Region Smart Insights';
+      document.getElementById('top3Title').textContent=isSuper?'OVERALL TOP 3':'MY REGION TOP 3';
+      const topBtn=document.querySelector('.filters .top3-btn');
+      if(topBtn) topBtn.textContent=isSuper?'🏆 Overall Top 3 Poster':'🏆 My Region Top 3 Poster';
+
+      // Audit activity is intentionally visible ONLY to Super Admin.
+      const auditCard=document.getElementById('auditCard');
+      if(auditCard) auditCard.classList.toggle('hidden',!isSuper);
+
+      const rf=document.getElementById('regionFilter');
+      if(!rf) return;
+
+      if(isSuper){
+        // Super Admin keeps the normal global selector.
+        rf.style.display='';
+        return;
+      }
+
+      // DATA is already server-filtered to this user's permitted regions.
+      const regions=[...new Set(DATA.map(x=>x.region).filter(Boolean))];
+      const previous=rf.value;
+      rf.innerHTML='';
+
+      if(regions.length>1){
+        // Combined view for multi-region coordinators, e.g. Hyderabad + Bangalore.
+        const label='All My Regions ('+regions.join(' + ')+')';
+        rf.add(new Option(label,'all'));
+      }
+
+      regions.forEach(r=>rf.add(new Option(r,r)));
+
+      // Default multi-region admins to the combined view; preserve a valid choice on refresh.
+      if([...rf.options].some(o=>o.value===previous)) rf.value=previous;
+      else if(regions.length>1) rf.value='all';
+      else if(regions.length===1) rf.value=regions[0];
+
+      rf.style.display=regions.length<=1?'none':'';
+    }
+
+    function loadPortalData(){
+      if(!ADMIN_SESSION || !ADMIN_SESSION.token || PORTAL_LOADING) return;
+      // A valid authenticated session must never leave the dashboard visually locked/blurred.
+      document.body.classList.remove('portal-locked');
+      PORTAL_LOADING=true;
+      currentDate=selectedDateValue();
+      google.script.run.withSuccessHandler(res=>{
+        PORTAL_LOADING=false;
+        if(!res || !res.success) throw new Error('Could not load portal data.');
+        DATA=Array.isArray(res.participants)?res.participants:[];
+        PORTAL_PROFILE=res.profile||PORTAL_PROFILE;
+        showPortalProfile(PORTAL_PROFILE,res.user||ADMIN_SESSION.user);
+        applyPortalScopeUI(res.user||ADMIN_SESSION.user);
+        populateFilters();
+        // Re-apply strict visual scope after generic filter builder.
+        applyPortalScopeUI(res.user||ADMIN_SESSION.user);
+        renderDashboard();
+        document.body.classList.remove('portal-locked');
+      }).withFailureHandler(err=>{
+        PORTAL_LOADING=false;
+        const message=String((err&&err.message)||err||'Unknown error');
+        const sessionProblem=/session has expired|invalid session|please login again|account is disabled/i.test(message);
+        if(sessionProblem){
+          document.body.classList.add('portal-locked');
+          document.getElementById('dashboardContent').innerHTML='<div style="color:#dc2626;padding:30px">Login/session error: '+escapeHtml(message)+'</div>';
+          // Keep the client session intact here. A transient backend execution must never erase the token automatically.
+          console.warn('Portal session check failed:',message);
+        }else{
+          // Do not destroy a valid login because a temporary sheet/network error occurred.
+          document.getElementById('dashboardContent').insertAdjacentHTML('afterbegin','<div style="color:#b45309;background:#fffbeb;border:1px solid #fde68a;padding:12px;border-radius:10px;margin-bottom:12px">Refresh error: '+escapeHtml(message)+'</div>');
+        }
+      }).getPortalData(currentDate,ADMIN_SESSION.token);
+    }
+
+    function changeDate(){
+      const d=selectedDateValue();
+      document.getElementById('adminDate').value=d==='all'?'':d;
+      loadPortalData();
+    }
+
+    function openAdmin(){
+      if(!ADMIN_SESSION || !ADMIN_SESSION.token){
+        document.getElementById('adminModal').classList.remove('hidden');
+        setTimeout(()=>document.getElementById('adminEmail').focus(),100);
+        return;
+      }
+      document.getElementById('adminArea').classList.remove('hidden');
+      populateParticipantSelect();
+      loadAuditLog();
+    }
+
+    function closeAdmin(){
+      if(!ADMIN_SESSION || !ADMIN_SESSION.token){
+        document.getElementById('loginMessage').textContent='Login is required to access this portal.';
+        document.getElementById('loginMessage').style.color='#dc2626';
+        return;
+      }
+      document.getElementById('adminModal').classList.add('hidden');
+    }
+
+    function loginAdmin(){
+      const email=(document.getElementById('adminEmail').value||'').trim();
+      const password=document.getElementById('adminPin').value||'';
+      const msg=document.getElementById('loginMessage');
+      if(!email || !password){ msg.textContent='Please enter your official Email ID and Password.'; msg.style.color='#dc2626'; return; }
+      msg.textContent='Opening your portal...'; msg.style.color='#2563eb';
+      google.script.run.withSuccessHandler(res=>{
+        if(!res || !res.success){ msg.textContent='Login failed.'; msg.style.color='#dc2626'; return; }
+        ADMIN_SESSION=res;
+        try{localStorage.setItem('telethon_admin_token',res.token||'');}catch(e){}
+        ACTIVE_ADMIN_PASSWORD=res.token;
+        PORTAL_PROFILE=res.profile||null;
+        saveLoginDetails();
+        document.getElementById('adminModal').classList.add('hidden');
+        document.getElementById('adminArea').classList.add('hidden');
+        document.body.classList.remove('portal-locked');
+        loadPortalData();
+      }).withFailureHandler(e=>{ msg.textContent='Error: '+(e.message||e); msg.style.color='#dc2626'; })
+        .authenticateUser(email,password);
+    }
+
+    function logoutPortal(silent){
+      const token=ADMIN_SESSION&&ADMIN_SESSION.token;
+      const finish=()=>{
+        ADMIN_SESSION=null; try{localStorage.removeItem('telethon_admin_token');localStorage.removeItem('telethon_admin_session_v4');}catch(e){} ACTIVE_ADMIN_PASSWORD=''; PORTAL_PROFILE=null; DATA=[];
+        document.body.classList.add('portal-locked');
+        document.getElementById('portalProfileCard').classList.add('hidden');
+        document.getElementById('adminArea').classList.add('hidden');
+        document.getElementById('regionSummary').innerHTML='';
+        document.getElementById('smartInsights').innerHTML='';
+        document.getElementById('dashboardContent').innerHTML='<div style="padding:40px">Please login to open your private portal.</div>';
+        document.getElementById('adminPin').value='';
+        document.getElementById('loginMessage').textContent='';
+        document.getElementById('adminModal').classList.remove('hidden');
+        if(!silent) setTimeout(()=>document.getElementById('adminEmail').focus(),100);
+      };
+      if(token) google.script.run.withSuccessHandler(finish).withFailureHandler(finish).logoutUser(token); else finish();
+    }
+
+    function closeAdminArea(){ document.getElementById('adminArea').classList.add('hidden'); }
+
+    function openProfileModal(){
+      if(!ADMIN_SESSION || !ADMIN_SESSION.token) return;
+      google.script.run.withSuccessHandler(res=>{
+        const p=res.profile||{}; PORTAL_PROFILE=p;
+        document.getElementById('profileNameInput').value=p.name||'';
+        document.getElementById('profileEmailInput').value=p.email||ADMIN_SESSION.user.email||'';
+        document.getElementById('profileMobileInput').value=p.mobile||'';
+        document.getElementById('profileScopeInfo').innerHTML='<b>Portal Access:</b> '+escapeHtml(portalScopeText(ADMIN_SESSION.user))+'<br><span style="font-size:11px">Region and Part access are controlled by Super Admin.</span>';
+        const img=document.getElementById('profilePhotoPreview');
+        img.src=p.photoUrl||'';
+        img.style.display=p.photoUrl?'block':'none';
+        document.getElementById('profilePhotoFile').value='';
+        document.getElementById('profileMessage').textContent='';
+        document.getElementById('profileModal').classList.remove('hidden');
+      }).withFailureHandler(e=>alert('Profile error: '+(e.message||e))).getMyProfile(ADMIN_SESSION.token);
+    }
+
+    function closeProfileModal(){ document.getElementById('profileModal').classList.add('hidden'); }
+
+    function previewProfilePhoto(input){
+      const file=input.files&&input.files[0]; if(!file) return;
+      if(file.size>5*1024*1024){ alert('Image must be under 5 MB.'); input.value=''; return; }
+      const reader=new FileReader();
+      reader.onload=e=>{ const img=document.getElementById('profilePhotoPreview'); img.src=e.target.result; img.style.display='block'; };
+      reader.readAsDataURL(file);
+    }
+
+    function saveMyProfile(){
+      if(!ADMIN_SESSION || !ADMIN_SESSION.token) return;
+      const name=(document.getElementById('profileNameInput').value||'').trim();
+      const mobile=(document.getElementById('profileMobileInput').value||'').trim();
+      const msg=document.getElementById('profileMessage');
+      msg.textContent='Saving...'; msg.style.color='#2563eb';
+      google.script.run.withSuccessHandler(res=>{
+        PORTAL_PROFILE=res.profile||PORTAL_PROFILE;
+        showPortalProfile(PORTAL_PROFILE,ADMIN_SESSION.user);
+        msg.textContent='Profile saved successfully.'; msg.style.color='#047857';
+      }).withFailureHandler(e=>{msg.textContent='Error: '+(e.message||e);msg.style.color='#dc2626';})
+        .saveMyProfile(ADMIN_SESSION.token,{name:name,mobile:mobile});
+    }
+
+    function uploadProfilePhoto(){
+      if(!ADMIN_SESSION || !ADMIN_SESSION.token) return;
+      const file=document.getElementById('profilePhotoFile').files?.[0];
+      const msg=document.getElementById('profileMessage');
+      if(!file){ msg.textContent='Please choose an image file first.'; msg.style.color='#dc2626'; return; }
+      if(file.size>5*1024*1024){ msg.textContent='Image must be under 5 MB.'; msg.style.color='#dc2626'; return; }
+      msg.textContent='Uploading photo...'; msg.style.color='#2563eb';
+      const reader=new FileReader();
+      reader.onload=e=>{
+        google.script.run.withSuccessHandler(res=>{
+          PORTAL_PROFILE=res.profile||PORTAL_PROFILE;
+          if(res.photoUrl) PORTAL_PROFILE.photoUrl=res.photoUrl;
+          showPortalProfile(PORTAL_PROFILE,ADMIN_SESSION.user);
+          document.getElementById('profilePhotoPreview').src=PORTAL_PROFILE.photoUrl||'';
+          msg.textContent='Profile photo uploaded successfully.'; msg.style.color='#047857';
+        }).withFailureHandler(err=>{msg.textContent='Upload error: '+(err.message||err);msg.style.color='#dc2626';})
+          .uploadMyProfilePhoto(ADMIN_SESSION.token,e.target.result,file.name,file.type);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Fix saved-login helpers to use the actual password field ID.
+    function loadSavedLogin(){
+      try{
+        const saved=JSON.parse(localStorage.getItem('telethon2026_saved_login')||'{}');
+        const email=document.getElementById('adminEmail'), password=document.getElementById('adminPin'), remember=document.getElementById('rememberLogin');
+        if(email && saved.email) email.value=saved.email;
+        if(password && saved.password) password.value=saved.password;
+        if(remember) remember.checked=!!saved.password;
+      }catch(e){}
+    }
+    function saveLoginDetails(){
+      try{
+        const remember=document.getElementById('rememberLogin')?.checked;
+        localStorage.setItem('telethon2026_saved_login',JSON.stringify({
+          email:(document.getElementById('adminEmail')?.value||'').trim(),
+          password:remember?(document.getElementById('adminPin')?.value||''):''
+        }));
+      }catch(e){}
+    }
+
+    // Start locked. No dashboard API call is allowed before authentication.
+    document.addEventListener('DOMContentLoaded',()=>{
+      document.body.classList.add('portal-locked');
+      loadSavedLogin();
+      document.getElementById('adminModal').classList.remove('hidden');
+      document.getElementById('dashboardContent').innerHTML='<div style="padding:40px">Please login to open your private portal.</div>';
+      setTimeout(()=>document.getElementById('adminEmail').focus(),250);
+    });
+
+
+    // Final data mutation handlers: always reload ONLY the authenticated portal scope.
+    function saveAmount(){
+      const id=document.getElementById('participantSelect').value;
+      const date=document.getElementById('adminDate').value;
+      const amount=document.getElementById('amountInput').value;
+      if(!id) return alert('Please select Qari Sahab.');
+      if(amount==='') return alert('Please enter amount.');
+      google.script.run.withSuccessHandler(()=>{
+        alert(date==='all'?'Overall amount updated successfully!':'Daily amount saved. Overall total updated automatically!');
+        document.getElementById('amountInput').value='';
+        document.getElementById('dateFilter').value=date;
+        loadPortalData();
+        populateParticipantSelect();
+        loadAuditLog();
+      }).withFailureHandler(e=>alert('Error: '+(e.message||e)))
+        .updateAmount(id,date,Number(amount),getAdminPassword());
+    }
+
+    function deleteSelectedEntry(){
+      const id=document.getElementById('participantSelect').value;
+      const date=document.getElementById('adminDate').value;
+      if(!id) return alert('Please select Qari Sahab.');
+      if(!date || date==='all') return alert('Please select a specific date.');
+      if(!confirm('Delete this selected date entry? Overall total will be adjusted automatically.')) return;
+      google.script.run.withSuccessHandler(r=>{
+        alert('Entry deleted successfully. Removed amount: '+money(r.deleted||0));
+        loadPortalData(); populateParticipantSelect(); loadAuditLog();
+      }).withFailureHandler(e=>alert('Error: '+(e.message||e)))
+        .deleteDailyEntry(id,date,getAdminPassword());
+    }
+
+    function addNewParticipant(){
+      const region=(document.getElementById('newRegion').value||'').trim();
+      const name=(document.getElementById('newName').value||'').trim();
+      const centre=(document.getElementById('newCentre').value||'').trim();
+      if(!region||!name||!centre) return alert('Please fill all fields.');
+      google.script.run.withSuccessHandler(()=>{
+        alert('Participant added successfully!');
+        document.getElementById('newName').value=''; document.getElementById('newCentre').value='';
+        loadPortalData();
+      }).withFailureHandler(e=>alert('Error: '+(e.message||e)))
+        .addParticipant(region,name,centre,getAdminPassword());
+    }
+
+    function resetAll(){
+      if(!confirm('Are you sure? This will delete ALL overall and date-wise collection data.')) return;
+      google.script.run.withSuccessHandler(()=>{alert('All amounts reset successfully.');loadPortalData();})
+        .withFailureHandler(e=>alert('Error: '+(e.message||e)))
+        .resetAllAmounts(getAdminPassword());
+    }
+
+</script>
+
+<div id="v2Management" class="v2-modal"><div class="v2-box">
+<button class="v2-close" onclick="closeV2()">✕ Close</button><h2>⚙️ TELETHON 2026 — Professional Management</h2>
+<div class="v2-tabs">
+<button class="active" onclick="v2Tab('users',this)">👥 User Management</button>
+<button onclick="v2Tab('targets',this)">🎯 Targets</button>
+<button onclick="v2Tab('analytics',this)">📊 Analytics</button>
+<button onclick="v2Tab('trash',this)">🗑️ Recovery</button>
+<button onclick="v2Tab('notifications',this)">🔔 Alerts</button>
+<button onclick="v2Tab('performance',this)">📈 Performance</button>
+<button onclick="v2Tab('reports',this)">📄 Reports</button>
+<button onclick="v2Tab('notes',this)">📝 Follow-up Notes</button>
+</div>
+<div id="v2-users" class="v2-panel active">
+<h3>Create / Manage Portal IDs</h3><button class="v2-success" onclick="setupV2Portal()">🚀 One-Time Portal V2 Setup</button><div class="v2-note">Click once after updating Code.gs. It creates Users, Targets and Recovery sheets and imports existing admin IDs.</div><div class="v2-grid">
+<input id="uName" placeholder="Full Name"><input id="uEmail" type="email" placeholder="Email ID"><input id="uPassword" type="password" placeholder="Password (min 8)">
+<select id="uRole"><option value="REGION_ADMIN">Region Admin</option><option value="PART_ADMIN">Part Admin</option><option value="SUPER_ADMIN">Super Admin</option></select>
+<input id="uRegions" placeholder="Regions e.g. Mumbai OR Hyderabad,Bangalore"><input id="uParts" placeholder="Parts e.g. Part 1 (leave blank for full region)"><input id="uMobile" placeholder="Mobile Number">
+</div><div class="v2-note">Multiple regions can be assigned with commas. Example: Hyderabad,Bangalore.</div><button class="v2-success" onclick="createV2User()">➕ Create User ID</button>
+<div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Region / Part</th><th>Status</th><th>Action</th></tr></thead><tbody id="usersBody"></tbody></table></div>
+</div>
+<div id="v2-targets" class="v2-panel"><h3>🎯 Region & Qari Target Management</h3><div class="v2-note" id="targetScopeNote">Set targets for your permitted region/part only.</div><h4>🌍 Region / Part Overall Target</h4><div class="v2-grid"><select id="tRegion"></select><select id="tPart"></select><input id="tAmount" type="number" min="0" placeholder="Target Amount"><input id="tStart" type="date"><input id="tEnd" type="date"></div><button class="v2-success" onclick="saveV2Target()">💾 Save Region Target</button><div id="targetsList"></div><hr style="margin:24px 0"><h4>👤 Qari Sahab Target</h4><div class="v2-note">Region Admin can set Overall Target or Daily Target only for Qari Sahiban in their own assigned region/part.</div><div class="v2-grid"><select id="qTargetQari"></select><select id="qTargetType" onchange="toggleQariTargetDate()"><option value="OVERALL">Overall Target</option><option value="DAILY">Daily Target</option></select><input id="qTargetAmount" type="number" min="0" placeholder="Qari Target Amount"><input id="qTargetDate" type="date" style="display:none"></div><button class="v2-success" onclick="saveV2QariTarget()">💾 Save Qari Target</button><div id="qariTargetsList"></div></div>
+<div id="v2-analytics" class="v2-panel"><h3>Professional Analytics</h3><div id="analyticsContent">Loading...</div></div>
+<div id="v2-trash" class="v2-panel"><h3>Deleted Qari Sahiban — Recovery Center</h3><div id="trashList">Loading...</div></div>
+<div id="v2-notifications" class="v2-panel"><h3>Smart Notifications</h3><div id="notificationList">Loading...</div></div>
+<div id="v2-performance" class="v2-panel"><h3>📈 Performance Intelligence</h3><div id="performanceContent">Loading...</div><hr style="margin:18px 0"><h4>Qari Performance History</h4><div class="v2-grid"><select id="perfQariSelect"></select><button class="v2-success" onclick="loadQariGraph()">Show Graph</button></div><canvas id="qariGraphCanvas" width="900" height="280" style="width:100%;border:1px solid #e2e8f0;border-radius:12px;margin-top:12px"></canvas></div>
+<div id="v2-reports" class="v2-panel"><h3>📄 Reports Center</h3><p>Export the current selected date/view as a professional Excel-compatible CSV report or print it as PDF.</p><button class="v2-success" onclick="downloadProfessionalCSV()">⬇️ Download Excel/CSV Report</button> <button class="v2-warning" onclick="printProfessionalReport()">🖨️ Print / Save PDF</button><div id="reportPreview" style="margin-top:16px"></div></div>
+<div id="v2-notes" class="v2-panel"><h3>📝 Qari Follow-up Notes</h3><div class="v2-grid"><select id="noteQariSelect"></select><select id="noteStatus"><option>Follow-up Required</option><option>Contacted</option><option>Good Response</option><option>Special Attention</option><option>On Leave</option></select><input id="noteText" placeholder="Write private follow-up note..."></div><button class="v2-success" onclick="saveCurrentQariNote()">💾 Save Note</button><div id="notesList" style="margin-top:15px"></div></div>
+</div></div>
+
+<script>
+// ================= PORTAL V2 MANAGEMENT UI =================
+function v2Run(name,args,ok,fail){let r=google.script.run.withSuccessHandler(ok||function(){}).withFailureHandler(e=>alert((e&&e.message)||e));if(args===undefined)r[name]();else r[name].apply(r,args);}
+function currentToken(){return (ADMIN_SESSION&&ADMIN_SESSION.token)||'';}
+function openV2(){const u=ADMIN_SESSION&&ADMIN_SESSION.user;const token=currentToken();if(!token){alert('Please login again.');return;}const role=String((u||{}).role||'').toUpperCase();if(!['SUPER_ADMIN','REGION_ADMIN','PART_ADMIN'].includes(role)){alert('Please login with an authorized admin account.');return;}document.getElementById('v2Management').style.display='block';const usersTab=document.querySelector('#v2Management .v2-tabs button[onclick*=\'users\']');if(usersTab)usersTab.style.display=role==='SUPER_ADMIN'?'':'none';const trashTab=document.querySelector('#v2Management .v2-tabs button[onclick*=\'trash\']');if(trashTab)trashTab.style.display=role==='SUPER_ADMIN'?'':'none';if(role!=='SUPER_ADMIN')v2Tab('targets',document.querySelector('#v2Management .v2-tabs button[onclick*=\'targets\']'));loadV2All();}
+function closeV2(){document.getElementById('v2Management').style.display='none';}
+function v2Tab(name,btn){document.querySelectorAll('.v2-panel').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.v2-tabs button').forEach(x=>x.classList.remove('active'));document.getElementById('v2-'+name).classList.add('active');btn.classList.add('active');if(name==='users')loadV2Users();if(name==='targets')loadV2Targets();if(name==='analytics')loadV2Analytics();if(name==='trash')loadV2Trash();if(name==='notifications')loadV2Notifications();if(name==='performance')loadPerformanceSuite();if(name==='reports')loadReportPreview();if(name==='notes')loadNotesPanel();}
+function loadV2All(){const role=String(((ADMIN_SESSION||{}).user||{}).role||'').toUpperCase();if(role==='SUPER_ADMIN'){loadV2Users();loadV2Trash();}loadV2Targets();loadV2Analytics();loadV2Notifications();loadPerformanceSuite();loadReportPreview();loadNotesPanel();}
+function createV2User(){const d={name:uName.value.trim(),email:uEmail.value.trim(),password:uPassword.value,role:uRole.value,regions:uRegions.value.split(',').map(x=>x.trim()).filter(Boolean),parts:uParts.value.split(',').map(x=>x.trim()).filter(Boolean),mobile:uMobile.value.trim()};v2Run('createUser',[currentToken(),d],()=>{alert('User ID created successfully');['uName','uEmail','uPassword','uRegions','uParts','uMobile'].forEach(id=>document.getElementById(id).value='');loadV2Users();});}
+function loadV2Users(){v2Run('listUsers',[currentToken()],rows=>{usersBody.innerHTML=rows.map(u=>`<tr><td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td>${escapeHtml(u.role)}</td><td>${escapeHtml((u.regions||[]).join(', '))}<br><small>${escapeHtml((u.parts||[]).join(', '))}</small></td><td>${u.status}</td><td><button class="v2-warning" onclick="toggleV2User('${u.id}','${u.status==='ACTIVE'?'DISABLED':'ACTIVE'}')">${u.status==='ACTIVE'?'Disable':'Enable'}</button> <button class="v2-danger" onclick="deleteV2User('${u.id}')">Delete</button><br><button style="margin-top:5px" onclick="resetV2Password('${u.id}')">Reset Password</button></td></tr>`).join('')||'<tr><td colspan="6">No users yet. Run Portal V2 Setup first.</td></tr>';});}
+function toggleV2User(id,status){v2Run('toggleUserStatus',[currentToken(),id,status],()=>loadV2Users());}
+function deleteV2User(id){if(!confirm('Delete this user permanently?'))return;v2Run('deleteUser',[currentToken(),id],()=>loadV2Users());}
+function resetV2Password(id){const p=prompt('Enter new password (minimum 8 characters)');if(!p)return;v2Run('resetUserPassword',[currentToken(),id,p],()=>alert('Password reset successfully'));}
+function configureTargetScope(){const u=((ADMIN_SESSION||{}).user)||{};const role=String(u.role||'').toUpperCase();const regions=(u.regions||[]).filter(Boolean);const parts=(u.parts||[]).filter(Boolean);const rs=document.getElementById('tRegion'),ps=document.getElementById('tPart'),note=document.getElementById('targetScopeNote');if(!rs||!ps)return;const allRegions=[...new Set((DATA||[]).map(x=>x.region).filter(Boolean))];const allowed=role==='SUPER_ADMIN'?(regions.length?regions:allRegions):regions;rs.innerHTML=(allowed.length?allowed:allRegions).map(r=>`<option value="${escAttr(r)}">${escapeHtml(r)}</option>`).join('');const partOptions=role==='PART_ADMIN'&&parts.length?parts:['Main','Part 1','Part 2'];ps.innerHTML=partOptions.map(p=>`<option value="${escAttr(p)}">${escapeHtml(p)}</option>`).join('');note.textContent=role==='SUPER_ADMIN'?'Super Admin can set targets for any region/part.':'You can set targets only for your assigned region/part. Current scope: '+(allowed.join(', ')||'Assigned Region')+(parts.length?' — '+parts.join(', '):'');}
+function saveV2Target(){const d={region:tRegion.value,part:tPart.value||'Main',target:Number(tAmount.value||0),start:tStart.value,end:tEnd.value,active:true};if(!d.region||!d.target)return alert('Please select region and enter target amount.');v2Run('saveTarget',[currentToken(),d],()=>{alert('Target saved successfully');tAmount.value='';loadV2Targets();});}
+function loadV2Targets(){configureTargetScope();v2Run('getTargets',[currentToken()],rows=>{targetsList.innerHTML='<div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Region</th><th>Part</th><th>Target</th><th>Period</th></tr></thead><tbody>'+rows.map(x=>`<tr><td>${escapeHtml(x.region)}</td><td>${escapeHtml(x.part)}</td><td>₹${Number(x.target).toLocaleString('en-IN')}</td><td>${x.start||'-'} to ${x.end||'-'}</td></tr>`).join('')+'</tbody></table></div>';loadV2QariTargets();});}
+function loadV2Analytics(){const date=selectedDateValue();v2Run('getProfessionalAnalytics',[currentToken(),date],a=>{analyticsContent.innerHTML=`<div class="v2-grid"><div class="v2-card"><div>Total Collection</div><div class="analytics-big">₹${a.total.toLocaleString('en-IN')}</div></div><div class="v2-card"><div>Active Qari</div><div class="analytics-big">${a.active}/${a.count}</div></div><div class="v2-card"><div>Average</div><div class="analytics-big">₹${Math.round(a.average).toLocaleString('en-IN')}</div></div><div class="v2-card"><div>Target Progress</div><div class="analytics-big">${a.progress.toFixed(1)}%</div><div class="target-progress"><div style="width:${a.progress}%"></div></div><small>Remaining: ₹${a.remaining.toLocaleString('en-IN')}</small></div></div><h4>Top 10</h4><ol>${a.top.map(x=>`<li>${escapeHtml(x.name)} — ₹${Number(x.amount).toLocaleString('en-IN')}</li>`).join('')}</ol><h4>Region / Part Performance</h4>${a.regions.map(x=>`<div class="notification-item"><b>${escapeHtml(x.region)} ${escapeHtml(x.part||'')}</b> — ₹${x.total.toLocaleString('en-IN')} | ${x.count} Qari</div>`).join('')}`;});}
+function loadV2Trash(){v2Run('listTrash',[currentToken()],rows=>{trashList.innerHTML=rows.length?'<div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Name</th><th>Region</th><th>Part</th><th>Amount</th><th>Deleted By</th><th>Action</th></tr></thead><tbody>'+rows.map(x=>`<tr><td>${escapeHtml(x.name)}<br><small>${escapeHtml(x.centre)}</small></td><td>${escapeHtml(x.region)}</td><td>${escapeHtml(x.part)}</td><td>₹${Number(x.amount).toLocaleString('en-IN')}</td><td>${escapeHtml(x.deletedBy)}</td><td><button class="v2-success" onclick="restoreV2('${x.trashId}')">Restore</button></td></tr>`).join('')+'</tbody></table></div>':'Trash is empty.';});}
+function restoreV2(id){v2Run('restoreParticipant',[currentToken(),id],()=>{alert('Participant restored');loadV2Trash();if(window.loadPortalData)loadPortalData();});}
+function loadV2Notifications(){const date=selectedDateValue();v2Run('getNotifications',[currentToken(),date],rows=>{notificationList.innerHTML=rows.map(x=>'<div class="notification-item">'+escapeHtml(x.text)+'</div>').join('')||'No new notifications.';});}
+
+
+function managementRows(){return (DATA||[]).filter(x=>{const u=(ADMIN_SESSION||{}).user||{};return String(u.role||'').toUpperCase()==='SUPER_ADMIN'||true;});}
+function fillQariSelect(id){const el=document.getElementById(id);if(!el)return;const cur=el.value;el.innerHTML='<option value="">Select Qari Sahab</option>'+managementRows().sort((a,b)=>String(a.name).localeCompare(String(b.name))).map(x=>`<option value="${escAttr(x.id)}">${escapeHtml(x.name)} — ${escapeHtml(x.region||'')}</option>`).join('');if(cur)el.value=cur;}
+function loadPerformanceSuite(){fillQariSelect('perfQariSelect');const date=selectedDateValue();v2Run('getPerformanceSuite',[currentToken(),date],r=>{performanceContent.innerHTML=`<div class="v2-grid"><div class="v2-card"><div>Average Performance</div><div class="analytics-big">₹${Math.round(r.average||0).toLocaleString('en-IN')}</div></div><div class="v2-card"><div>Low Performance / Attention</div><div class="analytics-big">${(r.lowPerformers||[]).length}</div></div></div><h4>⚠️ Needs Attention</h4>${(r.lowPerformers||[]).map(x=>`<div class="notification-item"><b>${escapeHtml(x.name)}</b> — ₹${Number(x.amount).toLocaleString('en-IN')} <small>${(r.badges[x.id]||[]).join(' · ')||'Needs follow-up'}</small></div>`).join('')||'No low-performance alert.'}<h4>🏅 Live Leaderboard & Badges</h4>${(r.leaderboard||[]).map((x,i)=>`<div class="notification-item">#${i+1} <b>${escapeHtml(x.name)}</b> — ₹${Number(x.amount).toLocaleString('en-IN')} <span style="float:right">${(r.badges[x.id]||[]).join(' ')}</span></div>`).join('')}`;});}
+function loadQariGraph(){const id=(document.getElementById('perfQariSelect')||{}).value;if(!id){alert('Select a Qari Sahab.');return;}v2Run('getQariPerformanceGraph',[currentToken(),id],drawQariGraph);}
+function drawQariGraph(points){const c=document.getElementById('qariGraphCanvas');if(!c)return;const ctx=c.getContext('2d'),W=c.width,H=c.height,p=40;ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);const vals=points.map(x=>Number(x.amount)||0),max=Math.max(1,...vals);ctx.strokeStyle='#cbd5e1';ctx.beginPath();ctx.moveTo(p,15);ctx.lineTo(p,H-p);ctx.lineTo(W-15,H-p);ctx.stroke();ctx.strokeStyle='#047857';ctx.lineWidth=3;ctx.beginPath();points.forEach((x,i)=>{const xx=p+(W-p-30)*(i/Math.max(1,points.length-1)),yy=(H-p)-((Number(x.amount)||0)/max)*(H-p-30);if(i===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);});ctx.stroke();ctx.fillStyle='#334155';ctx.font='12px Arial';ctx.fillText('Daily Collection (₹) — Max ₹'+max.toLocaleString('en-IN'),p,14);}
+function loadReportPreview(){const date=selectedDateValue();v2Run('getReportData',[currentToken(),date],r=>{window.__reportData=r;reportPreview.innerHTML=`<div class="v2-note">${r.rows.length} Qari records ready. Total: ₹${r.rows.reduce((s,x)=>s+Number(x.amount||0),0).toLocaleString('en-IN')}</div>`;});}
+function downloadProfessionalCSV(){const r=window.__reportData;if(!r){alert('Loading report...');loadReportPreview();return;}const header=['Rank','Qari Sahab','Jamia / Centre','Region','Part','Amount','Units','Status'];const rows=r.rows.slice().sort((a,b)=>b.amount-a.amount).map((x,i)=>[i+1,x.name,x.centre,x.region,x.part,x.amount,x.units.toFixed(2),x.status]);const csv=[header,...rows].map(a=>a.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='TELETHON_2026_Report_'+(r.date||'Overall')+'.csv';a.click();URL.revokeObjectURL(a.href);}
+function printProfessionalReport(){
+  const r=window.__reportData;
+  if(!r){alert('Loading report...');loadReportPreview();return;}
+  const rows=(r.rows||[]).slice().sort((a,b)=>Number(b.amount||0)-Number(a.amount||0));
+  const w=window.open('','_blank');
+  if(!w){alert('Please allow popups to print the report.');return;}
+  const bodyRows=rows.map((x,i)=>'<tr><td>'+String(i+1)+'</td><td>'+escapeHtml(String(x.name||''))+'</td><td>'+escapeHtml(String(x.centre||''))+'</td><td>'+escapeHtml(String(x.region||''))+' '+escapeHtml(String(x.part||''))+'</td><td>₹'+Number(x.amount||0).toLocaleString('en-IN')+'</td></tr>').join('');
+  w.document.open();
+  w.document.write('<!doctype html><html><head><title>TELETHON 2026 Report</title><style>body{font-family:Arial;padding:25px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #bbb;padding:8px;text-align:left}th{background:#eee}h1{color:#065f46}</style></head><body><h1>TELETHON 2026 — Performance Report</h1><p>Period: '+escapeHtml(String(r.date||'Overall'))+'</p><table><thead><tr><th>#</th><th>Qari Sahab</th><th>Jamia</th><th>Region</th><th>Amount</th></tr></thead><tbody>'+bodyRows+'</tbody></table></body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function(){w.print();},300);
+}
+</script>
+
+<script id="final-session-v4-client-guard">
+/* Fresh page open must always show the login screen.
+   Remember Login only prefills credentials; it never restores an authenticated session. */
+(function(){
+  document.addEventListener('DOMContentLoaded',function(){
+    try{
+      ADMIN_SESSION=null;
+      ACTIVE_ADMIN_PASSWORD='';
+      PORTAL_PROFILE=null;
+      localStorage.removeItem('telethon_admin_token');
+      localStorage.removeItem('telethon_admin_session_v4');
+    }catch(e){}
+    document.body.classList.add('portal-locked');
+    const modal=document.getElementById('adminModal'); if(modal) modal.classList.remove('hidden');
+  });
+})();
+</script>
+
+<script id="restored-v2-helper-functions">
+function loadNotesPanel(){fillQariSelect('noteQariSelect');const id=(document.getElementById('noteQariSelect')||{}).value;if(id)loadQariNotesList(id);}
+function loadQariNotesList(id){if(!id){notesList.innerHTML='Select a Qari Sahab to view notes.';return;}v2Run('getQariNotes',[currentToken(),id],rows=>{notesList.innerHTML=(rows||[]).map(x=>`<div class="notification-item"><b>${escapeHtml(x.status)}</b><br>${escapeHtml(x.note)}<br><small>${escapeHtml(x.createdBy||'')} — ${escapeHtml(String(x.createdAt||''))}</small></div>`).join('')||'No notes yet.';});}
+function saveCurrentQariNote(){const id=(document.getElementById('noteQariSelect')||{}).value,n=(document.getElementById('noteText')||{}).value,s=(document.getElementById('noteStatus')||{}).value;if(!id||!n.trim()){alert('Select Qari Sahab and write a note.');return;}v2Run('saveQariNote',[currentToken(),id,n,s],()=>{noteText.value='';loadQariNotesList(id);alert('Follow-up note saved.');});}
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='noteQariSelect')loadQariNotesList(e.target.value);});
+
+function toggleQariTargetDate(){const t=document.getElementById('qTargetType'),d=document.getElementById('qTargetDate');if(d)d.style.display=t&&t.value==='DAILY'?'block':'none';}
+function loadQariTargetOptions(){const el=document.getElementById('qTargetQari');if(!el)return;const rows=(DATA||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name)));el.innerHTML='<option value="">Select Qari Sahab</option>'+rows.map(x=>`<option value="${escAttr(x.id)}">${escapeHtml(x.name)} — ${escapeHtml(x.centre||'')} (${escapeHtml(x.region||'')} ${escapeHtml(x.part||'')})</option>`).join('');}
+function saveV2QariTarget(){const participantId=(document.getElementById('qTargetQari')||{}).value,type=(document.getElementById('qTargetType')||{}).value,target=Number((document.getElementById('qTargetAmount')||{}).value||0),date=(document.getElementById('qTargetDate')||{}).value||'';if(!participantId||!target)return alert('Please select Qari Sahab and enter target amount.');if(type==='DAILY'&&!date)return alert('Please select a date for Daily Target.');v2Run('saveQariTarget',[currentToken(),{participantId,type,target,date}],()=>{alert('Qari target saved successfully');document.getElementById('qTargetAmount').value='';loadV2QariTargets();});}
+function loadV2QariTargets(){loadQariTargetOptions();const list=document.getElementById('qariTargetsList');if(!list)return;v2Run('getQariTargets',[currentToken()],rows=>{const byId={};(DATA||[]).forEach(x=>byId[String(x.id)]=x);list.innerHTML=rows&&rows.length?'<div class="v2-table-wrap"><table class="v2-table"><thead><tr><th>Qari Sahab</th><th>Region</th><th>Target Type</th><th>Date</th><th>Target</th></tr></thead><tbody>'+rows.map(x=>{const p=byId[String(x.participantId)]||{};return `<tr><td>${escapeHtml(p.name||x.participantId)}</td><td>${escapeHtml(x.region||'')} ${escapeHtml(x.part||'')}</td><td>${escapeHtml(x.type)}</td><td>${escapeHtml(x.date||'Overall')}</td><td>₹${Number(x.target||0).toLocaleString('en-IN')}</td></tr>`}).join('')+'</tbody></table></div>':'No Qari targets set yet.';});}
+function setupV2Portal(){v2Run('setupPortalV2',[currentToken()],r=>{alert('Portal V2 setup completed. Existing admin IDs imported.');loadV2Users();});}
+function trashSelectedQari(){const id=(document.getElementById('participantSelect')||{}).value;if(!id){alert('Select a Qari Sahab first.');return;}if(!confirm('Move selected Qari Sahab to Trash? Super Admin can restore later.'))return;v2Run('softDeleteParticipant',[currentToken(),id],()=>{alert('Moved to Trash.');if(window.loadPortalData)loadPortalData();});}
+
+// Management button is part of the page and is shown only after a verified Super Admin session.
+</script>
+
+<div id="forgotPasswordModal" class="modal hidden"><div class="modal-box" style="max-width:520px">
+  <div class="modal-head"><h2>🔐 Reset Password by Email OTP</h2><button class="close-btn" type="button" onclick="closeForgotPassword()">Close</button></div>
+  <div class="login-gate-note">Enter your registered portal Email ID. A 6-digit OTP will be sent to that email.</div>
+  <label style="display:block;margin:12px 0 4px;font-weight:700">📧 Registered Email ID</label>
+  <input id="resetEmail" type="email" placeholder="Enter registered Email ID">
+  <button class="admin-btn" type="button" style="margin-top:12px" onclick="sendResetOtp()">📨 Send OTP</button>
+  <div id="otpStep" style="display:none;margin-top:16px">
+    <label style="display:block;margin:8px 0 4px;font-weight:700">🔢 6-Digit OTP</label>
+    <input id="resetOtp" inputmode="numeric" maxlength="6" placeholder="Enter OTP from email">
+    <label style="display:block;margin:12px 0 4px;font-weight:700">🔑 New Password</label>
+    <input id="resetNewPassword" type="password" placeholder="Minimum 8 characters, letters + numbers">
+    <label style="display:block;margin:12px 0 4px;font-weight:700">🔑 Confirm New Password</label>
+    <input id="resetConfirmPassword" type="password" placeholder="Repeat new password">
+    <button class="admin-btn" type="button" style="margin-top:12px" onclick="confirmOtpPasswordReset()">✅ Verify OTP & Change Password</button>
+  </div>
+  <div id="forgotPasswordMessage" style="margin-top:12px;font-size:13px;font-weight:700"></div>
+</div></div>
+
+<script>
+/* ===== EMAIL OTP PASSWORD RESET ===== */
+function openForgotPassword(){
+  document.getElementById('forgotPasswordMessage').textContent='';
+  document.getElementById('forgotPasswordModal').classList.remove('hidden');
+}
+function closeForgotPassword(){document.getElementById('forgotPasswordModal').classList.add('hidden');}
+function setForgotMessage(text,color){const el=document.getElementById('forgotPasswordMessage');el.textContent=text;el.style.color=color||'#2563eb';}
+function sendResetOtp(){
+  const email=(document.getElementById('resetEmail').value||'').trim();
+  if(!email){setForgotMessage('Enter your registered Email ID.','#dc2626');return;}
+  setForgotMessage('Sending OTP...','#2563eb');
+  google.script.run.withSuccessHandler(r=>{
+    setForgotMessage((r&&r.message)||'OTP sent. Check your email.','#059669');
+    document.getElementById('otpStep').style.display='block';
+  }).withFailureHandler(e=>setForgotMessage('Error: '+((e&&e.message)||e),'#dc2626')).requestPasswordResetOtp(email);
+}
+function confirmOtpPasswordReset(){
+  const email=(document.getElementById('resetEmail').value||'').trim();
+  const otp=(document.getElementById('resetOtp').value||'').trim();
+  const p=document.getElementById('resetNewPassword').value||'';
+  const c=document.getElementById('resetConfirmPassword').value||'';
+  if(!email||!otp||!p||!c){setForgotMessage('Fill Email, OTP and both password fields.','#dc2626');return;}
+  if(p!==c){setForgotMessage('New password and confirmation do not match.','#dc2626');return;}
+  setForgotMessage('Verifying OTP and changing password...','#2563eb');
+  google.script.run.withSuccessHandler(r=>{
+    setForgotMessage((r&&r.message)||'Password changed successfully.','#059669');
+    document.getElementById('adminEmail').value=email;
+    document.getElementById('adminPin').value='';
+    setTimeout(()=>{closeForgotPassword();alert('Password changed successfully. Please login with your new password.');},500);
+  }).withFailureHandler(e=>setForgotMessage('Error: '+((e&&e.message)||e),'#dc2626')).resetPasswordWithOtp(email,otp,p);
+}
+
+/* ===== FINAL MANAGEMENT ACCESS REPAIR ===== */
+window.openV2=function(){
+  const token=currentToken();
+  const user=(ADMIN_SESSION||{}).user||{};
+  if(!token){alert('Please login again.');return;}
+  google.script.run.withSuccessHandler(r=>{
+    const role=String((r&&r.role)||user.role||'').toUpperCase();
+    document.getElementById('v2Management').style.display='block';
+    const usersTab=document.querySelector('#v2Management .v2-tabs button[onclick*=\'users\']');
+    const trashTab=document.querySelector('#v2Management .v2-tabs button[onclick*=\'trash\']');
+    if(usersTab)usersTab.style.display=role==='SUPER_ADMIN'?'':'none';
+    if(trashTab)trashTab.style.display=role==='SUPER_ADMIN'?'':'none';
+    if(role!=='SUPER_ADMIN'){
+      const targetBtn=document.querySelector('#v2Management .v2-tabs button[onclick*=\'targets\']');
+      if(targetBtn)v2Tab('targets',targetBtn);
+    }
+    loadV2All();
+  }).withFailureHandler(e=>alert('Management access error: '+((e&&e.message)||e))).getManagementBootstrap(token);
+};
+</script>
+
+
+<style id="quick-card-mode-css">
+.quick-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0 18px}.quick-toolbar .hint{font-size:12px;color:#64748b}
+.qari-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px}
+.qari-work-card{background:#fff;border:1px solid #e5e7eb;border-radius:22px;padding:16px;box-shadow:0 8px 28px rgba(15,23,42,.08);transition:.2s;overflow:hidden}.qari-work-card:hover{transform:translateY(-2px);box-shadow:0 14px 35px rgba(15,23,42,.13)}
+.qari-head{display:flex;gap:13px;align-items:center}.qari-photo{width:82px;height:82px;border-radius:50%;object-fit:cover;border:4px solid #eef2ff;background:#f1f5f9}.qari-photo-placeholder{width:82px;height:82px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;background:#eef2ff}.qari-meta{min-width:0;flex:1}.qari-name{font-size:18px;font-weight:800;color:#111827;line-height:1.25}.qari-centre{font-size:13px;color:#475569;margin-top:4px}.qari-region{font-size:11px;color:#7c3aed;font-weight:700;margin-top:5px}
+.qari-contact{display:flex;gap:8px;margin:13px 0}.qari-contact a{flex:1;text-decoration:none;text-align:center;padding:10px 8px;border-radius:11px;font-weight:800;font-size:13px}.call-btn{background:#e0f2fe;color:#0369a1}.wa-btn{background:#dcfce7;color:#15803d}.disabled-contact{opacity:.45;pointer-events:none}
+.qari-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.qstat{background:#f8fafc;border-radius:12px;padding:10px}.qstat small{display:block;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase}.qstat b{display:block;font-size:18px;margin-top:3px;color:#0f172a}.qstat.highlight{background:#f0fdf4}.qstat.highlight b{color:#047857}
+.qari-progress{margin:12px 0}.progress-label{display:flex;justify-content:space-between;font-size:11px;color:#64748b;margin-bottom:5px}.progress-track{height:9px;background:#e5e7eb;border-radius:999px;overflow:hidden}.progress-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#2563eb);border-radius:999px}
+.quick-amount{display:flex;gap:8px;margin-top:12px}.quick-amount input{min-width:0;flex:1;padding:12px;border:1px solid #cbd5e1;border-radius:12px;font-size:15px}.quick-amount button{border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}.quick-add{background:#059669;color:#fff}.quick-minus{background:#fee2e2;color:#b91c1c}
+.quick-presets{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.quick-presets button{border:1px solid #dbeafe;background:#fff;color:#2563eb;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer}.quick-bottom{display:flex;gap:8px;margin-top:11px}.quick-bottom button{flex:1;border:0;background:#f1f5f9;color:#334155;padding:9px;border-radius:10px;font-weight:700;cursor:pointer}.quick-disabled{opacity:.5;pointer-events:none}.quick-empty{text-align:center;padding:50px;color:#64748b}
+@media(max-width:600px){.qari-card-grid{grid-template-columns:1fr}.qari-work-card{padding:14px}.qari-photo,.qari-photo-placeholder{width:72px;height:72px}.quick-toolbar>*{width:100%}}
+</style>
+<script id="quick-card-mode-js">
+(function(){
+  function qPhone(x){return String(x.qariPhone||'').replace(/[^0-9]/g,'');}
+  function waPhone(x){let n=qPhone(x);if(n.length===10)n='91'+n;return n;}
+  function token(){
+    if(!ADMIN_SESSION || !ADMIN_SESSION.token) throw new Error('Please login again.');
+    return ADMIN_SESSION.token;
+  }
+  function selectedDate(){return ((document.getElementById('dateFilter')||{}).value)||currentDate||'all';}
+  window.quickPreset=function(id,val){
+    const el=document.getElementById('qa_'+id); if(el){el.value=val;el.focus();}
+  };
+  window.quickAdjust=function(id,sign){
+    let t;try{t=token();}catch(e){alert(e.message);return;}
+    const el=document.getElementById('qa_'+id), amt=Number(el&&el.value||0);
+    if(!Number.isFinite(amt)||amt<=0){alert('Please enter a valid amount.');return;}
+    const date=selectedDate();
+    const label=date==='all'?'Overall Collection':formatDateLabel(date);
+    if(!confirm((sign>0?'Add ':'Minus ')+money(amt)+' — '+label+'?'))return;
+    const buttons=el?el.closest('.qari-work-card').querySelectorAll('button'):[];buttons.forEach(b=>b.disabled=true);
+    google.script.run.withSuccessHandler(function(r){
+      if(el)el.value='';
+      // Refresh only after the server confirms the write. No timer is used, so open panels cannot auto-close.
+      loadPortalData();
+    }).withFailureHandler(function(e){
+      buttons.forEach(b=>b.disabled=false);
+      const msg=((e&&e.message)||e||'Unknown error');
+      alert('Update error: '+msg);
+    }).quickCardUpdate(t,id,date,sign*amt);
+  };
+  window.quickHistory=function(id,name){
+    let t;try{t=token();}catch(e){alert(e.message);return;}
+    const box=document.getElementById('history_'+id);
+    if(!box)return;
+    if(box.style.display==='block'){box.style.display='none';return;}
+    box.style.display='block';box.innerHTML='<div class="quick-history-loading">Loading history...</div>';
+    google.script.run.withSuccessHandler(function(rows){
+      const body=(rows||[]).map(r=>'<tr><td>'+escapeHtml(r.date||'')+'</td><td>'+money(r.amount)+'</td><td>'+escapeHtml(r.updatedAt||'')+'</td></tr>').join('')||'<tr><td colspan="3">No history found.</td></tr>';
+      box.innerHTML='<div class="quick-history-title">'+escapeHtml(name)+' — Collection History</div><table><thead><tr><th>Date</th><th>Amount</th><th>Updated</th></tr></thead><tbody>'+body+'</tbody></table>';
+    }).withFailureHandler(function(e){box.innerHTML='<div class="quick-history-error">History error: '+escapeHtml((e&&e.message)||e)+'</div>';}).getParticipantHistory(id,t);
+  };
+  window.editQariContact=function(id){
+    const p=DATA.find(x=>String(x.id)===String(id));if(!p)return;
+    const box=document.getElementById('edit_'+id);if(!box)return;
+    if(box.style.display==='block'){box.style.display='none';return;}
+    box.style.display='block';
+    box.innerHTML='<div class="edit-grid"><input id="ep_'+id+'" placeholder="Phone / WhatsApp number" value="'+escapeHtml(p.qariPhone||'')+'"><input id="ec_'+id+'" placeholder="Jamia / Centre" value="'+escapeHtml(p.centre||'')+'"><button onclick="saveQariContact(\''+escAttr(id)+'\')">💾 Save Details</button></div>';
+  };
+  window.saveQariContact=function(id){
+    let t;try{t=token();}catch(e){alert(e.message);return;}
+    const phone=(document.getElementById('ep_'+id)||{}).value||'';
+    const centre=(document.getElementById('ec_'+id)||{}).value||'';
+    google.script.run.withSuccessHandler(function(){loadPortalData();}).withFailureHandler(function(e){alert('Save error: '+((e&&e.message)||e));}).updateParticipantContact(t,id,{phone:phone,centre:centre});
+  };
+  const oldRender=window.renderDashboard;
+  window.renderDashboard=function(){
+    const search=((document.getElementById('searchInput')||{}).value||'').toLowerCase().trim();
+    const region=((document.getElementById('regionFilter')||{}).value||'all');
+    const filtered=(DATA||[]).filter(function(x){const text=[x.name,x.centre,x.region,x.part,x.qariPhone].join(' ').toLowerCase();return text.includes(search)&&(region==='all'||x.region===region);}).sort((a,b)=>(Number(b.amount)||0)-(Number(a.amount)||0));
+    const total=filtered.reduce((a,x)=>a+(Number(x.amount)||0),0);
+    const titleDate=selectedDate();
+    document.getElementById('collectionTitle').textContent=titleDate==='all'?'TOTAL COLLECTION':'COLLECTION FOR SELECTED DATE';
+    document.getElementById('dateLabel').textContent='Showing '+formatDateLabel(titleDate);
+    document.getElementById('totalCollection').textContent=money(total);
+    document.getElementById('totalParticipants').textContent=filtered.length;
+    document.getElementById('totalUnits').textContent=(total/UNIT_RATE).toFixed(2);
+    let html='<div class="quick-toolbar"><div class="hint">⚡ Direct Qari Card Collection — Amount enter karein aur Add/Minus karein. Calendar date select karne par daily entry save hogi; Overall mode me overall correction hoga.</div></div><div class="qari-card-grid">';
+    html+=filtered.map(function(x){
+      const phone=qPhone(x),wa=waPhone(x);
+      const img=x.photoUrl?'<img class="qari-photo" src="'+escAttr(x.photoUrl)+'" onerror="this.outerHTML=\'<div class=\\\'qari-photo-placeholder\\\'>👤</div>\'">':'<div class="qari-photo-placeholder">👤</div>';
+      const target=titleDate==='all'?Number(x.overallTarget||0):Number(x.dailyTarget||x.target||0);
+      const pct=target?Math.min(100,Math.round((Number(x.amount||0)/target)*100)):0;
+      return '<div class="qari-work-card"><div class="qari-head">'+img+'<div class="qari-meta"><div class="qari-name">'+escapeHtml(x.name||'Qari Sahab')+'</div><div class="qari-centre">🕌 '+escapeHtml(x.centre||'Centre not added')+'</div><div class="qari-region">📍 '+escapeHtml([x.region,x.part].filter(Boolean).join(' • '))+'</div>'+(phone?'<div class="qari-centre">📱 '+escapeHtml(x.qariPhone)+'</div>':'')+'</div></div>'+
+      '<div class="qari-contact '+(!phone?'quick-disabled':'')+'"><a class="call-btn" href="'+(phone?'tel:'+phone:'#')+'">📞 Call</a><a class="wa-btn" target="_blank" href="'+(wa?'https://wa.me/'+wa:'#')+'">💬 WhatsApp</a></div>'+
+      '<div class="qari-stats"><div class="qstat highlight"><small>'+ (titleDate==='all'?'Overall Collection':'Selected Date')+'</small><b>'+money(x.amount)+'</b></div><div class="qstat"><small>Overall</small><b>'+money(x.overallAmount||0)+'</b></div><div class="qstat"><small>Units</small><b>'+((Number(x.amount)||0)/UNIT_RATE).toFixed(2)+'</b></div><div class="qstat"><small>Target</small><b>'+(target?money(target):'Not Set')+'</b></div></div>'+
+      (target?'<div class="qari-progress"><div class="progress-label"><span>Progress</span><span>'+pct+'%</span></div><div class="progress-track"><div class="progress-fill" style="width:'+pct+'%"></div></div></div>':'')+
+      '<div class="quick-amount"><input id="qa_'+escAttr(x.id)+'" type="number" min="1" inputmode="numeric" placeholder="Enter amount"><button class="quick-add" onclick="quickAdjust(\''+escAttr(x.id)+'\',1)">➕ Add</button><button class="quick-minus" onclick="quickAdjust(\''+escAttr(x.id)+'\',-1)">➖ Minus</button></div>'+
+      '<div class="quick-presets"><button onclick="quickPreset(\''+escAttr(x.id)+'\',500)">₹500</button><button onclick="quickPreset(\''+escAttr(x.id)+'\',1000)">₹1,000</button><button onclick="quickPreset(\''+escAttr(x.id)+'\',2000)">₹2,000</button><button onclick="quickPreset(\''+escAttr(x.id)+'\',5000)">₹5,000</button></div>'+
+      '<div class="quick-bottom"><button onclick="quickHistory(\''+escAttr(x.id)+'\',\''+escAttr(x.name||'Qari Sahab')+'\')">🕘 History</button><button onclick="editQariContact(\''+escAttr(x.id)+'\')">✏️ Edit Contact</button></div><div id="history_'+escAttr(x.id)+'" class="quick-history" style="display:none"></div><div id="edit_'+escAttr(x.id)+'" class="quick-edit" style="display:none"></div></div>';
+    }).join('');
+    html+='</div>';
+    document.getElementById('dashboardContent').innerHTML=html||'<div class="quick-empty">No Qari Sahab found.</div>';
+  };
+})();
+</script>
+<style>
+.quick-history{margin-top:10px;padding:10px;border:1px solid #dbe5ef;border-radius:10px;background:#fff;overflow:auto}.quick-history-title{font-weight:800;margin-bottom:7px}.quick-history table{width:100%;border-collapse:collapse;font-size:12px}.quick-history th,.quick-history td{padding:7px;border-bottom:1px solid #e5e7eb;text-align:left}.quick-edit{margin-top:10px}.edit-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:7px}.edit-grid input{min-width:0;padding:9px;border:1px solid #cbd5e1;border-radius:8px}.edit-grid button{border:0;border-radius:8px;padding:9px 12px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer}.quick-bottom{display:flex;gap:8px}.quick-bottom button{flex:1}@media(max-width:700px){.edit-grid{grid-template-columns:1fr}.quick-bottom{flex-wrap:wrap}}
+</style>
+
+
+
+<script id="final-login-stability-fix">
+/* FINAL LOGIN FIX
+   The previous build contained multiple loginAdmin definitions. One older wrapper
+   reopened Admin Panel after authentication and could leave the dashboard behind
+   a modal/blur overlay. This final override is loaded LAST and is authoritative. */
+(function(){
+  let LOGIN_BUSY=false;
+
+  function hideLoginOverlays(){
+    ['adminModal','adminArea'].forEach(function(id){
+      const el=document.getElementById(id);
+      if(el) el.classList.add('hidden');
+    });
+  }
+
+  function stableLoginAdmin(){
+    if(LOGIN_BUSY) return;
+    const email=(document.getElementById('adminEmail')?.value||'').trim();
+    const password=document.getElementById('adminPin')?.value||'';
+    const msg=document.getElementById('loginMessage');
+    if(!email || !password){
+      if(msg){msg.textContent='Please enter your official Email ID and Password.';msg.style.color='#dc2626';}
+      return;
+    }
+
+    LOGIN_BUSY=true;
+    if(msg){msg.textContent='Logging in...';msg.style.color='#2563eb';}
+
+    google.script.run
+      .withSuccessHandler(function(res){
+        LOGIN_BUSY=false;
+        if(!res || !res.success || !res.token){
+          if(msg){msg.textContent=(res&&res.message)||'Login failed. Please check Email ID and Password.';msg.style.color='#dc2626';}
+          return;
+        }
+
+        // Store one authoritative authenticated session.
+        ADMIN_SESSION=res;
+        try{localStorage.removeItem('telethon_admin_token'); localStorage.removeItem('telethon_admin_session_v4');}catch(e){}
+        try{ACTIVE_ADMIN_PASSWORD=res.token;}catch(e){}
+        try{PORTAL_PROFILE=res.profile||null;}catch(e){}
+        try{if(typeof saveLoginDetails==='function') saveLoginDetails();}catch(e){}
+
+        // IMPORTANT: close EVERY login/admin overlay before loading the portal.
+        hideLoginOverlays();
+        document.body.classList.remove('portal-locked');
+
+        // Clear any stale message so no old login state remains visible.
+        if(msg){msg.textContent='';}
+
+        // Load the role-filtered portal directly. Do NOT open Admin Panel automatically.
+        try{
+          if(typeof loadPortalData==='function') loadPortalData();
+          else throw new Error('Portal loader is unavailable.');
+        }catch(err){
+          document.body.classList.remove('portal-locked');
+          if(msg){msg.textContent='Portal load error: '+((err&&err.message)||err);msg.style.color='#dc2626';}
+        }
+      })
+      .withFailureHandler(function(err){
+        LOGIN_BUSY=false;
+        if(msg){msg.textContent='Login error: '+((err&&err.message)||err);msg.style.color='#dc2626';}
+      })
+      .authenticateUser(email,password);
+  }
+
+  // Override all earlier duplicate declarations/assignments.
+  window.loginAdmin=stableLoginAdmin;
+  try{loginAdmin=stableLoginAdmin;}catch(e){}
+
+  // Defensive cleanup: if an authenticated session exists, stale blur must not persist.
+  window.addEventListener('pageshow',function(){
+    if(window.ADMIN_SESSION && ADMIN_SESSION.token){
+      document.body.classList.remove('portal-locked');
+      hideLoginOverlays();
+    }
+  });
+})();
+</script>
+
+<!-- ================= FOLLOW-UP NOTIFICATION CENTER ================= -->
+<style id="followup-notification-center-css">
+.contact-alert-panel{margin:12px 0 18px;background:linear-gradient(135deg,#fff7ed,#fff);border:1px solid #fdba74;border-radius:18px;padding:16px;box-shadow:0 8px 25px rgba(154,52,18,.08)}
+.contact-alert-panel.hidden{display:none!important}.contact-alert-title{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:18px;font-weight:900;color:#9a3412;margin-bottom:10px}.contact-alert-sub{font-size:12px;color:#64748b;font-weight:600;margin-top:4px}.contact-alert-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.contact-alert-item{background:#fff;border:1px solid #fed7aa;border-radius:14px;padding:13px}.contact-alert-item b{display:block;font-size:16px;color:#1f2937;margin-bottom:5px}.contact-alert-meta{font-size:12px;color:#64748b;line-height:1.6}.contact-alert-note{margin-top:8px;font-size:13px;color:#7c2d12;background:#fff7ed;border-radius:9px;padding:8px}.contact-alert-actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.contact-alert-actions button,.contact-alert-actions a{border:0;border-radius:9px;padding:8px 10px;font-weight:800;cursor:pointer;text-decoration:none;font-size:12px}.contact-done{background:#059669;color:#fff}.contact-noanswer{background:#dc2626;color:#fff}.contact-callback{background:#d97706;color:#fff}.contact-refresh{background:#e2e8f0;color:#334155}.contact-call-admin{background:#e0f2fe;color:#0369a1}.contact-wa-admin{background:#dcfce7;color:#15803d}.super-followup-btn{width:100%;margin-top:8px;border:0;border-radius:10px;padding:9px 10px;background:#fff7ed;color:#c2410c;font-weight:800;cursor:pointer;border:1px solid #fed7aa}.super-followup-btn:hover{background:#ffedd5}.followup-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:900}.status-open{background:#fff7ed;color:#c2410c;border:1px solid #fdba74}.status-contacted{background:#ecfdf5;color:#047857;border:1px solid #86efac}.status-no-answer{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}.status-callback{background:#fffbeb;color:#b45309;border:1px solid #fde68a}.followup-admin-box{margin-top:9px;padding:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px}.followup-admin-name{font-weight:900;font-size:12px;color:#334155}.followup-empty{padding:12px;background:#f8fafc;border-radius:10px;color:#64748b;font-size:13px}.followup-count{background:#9a3412;color:#fff;border-radius:999px;padding:5px 10px;font-size:12px}.followup-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.followup-tabs button{border:1px solid #fed7aa;background:#fff;color:#9a3412;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;cursor:pointer}.followup-tabs button.active{background:#9a3412;color:#fff}
+</style>
+<script id="followup-notification-center-js">
+(function(){
+  window.CONTACT_ALERTS=[]; window.FOLLOWUP_FILTER='OPEN'; window.__followupPollStarted=window.__followupPollStarted||false;
+  function role(){return String(((window.ADMIN_SESSION||{}).user||{}).role||'').toUpperCase();}
+  function isSuper(){return role()==='SUPER_ADMIN';}
+  function esc(s){return escapeHtml(String(s==null?'':s));}
+  function statusMeta(s){s=String(s||'OPEN').toUpperCase();if(s==='CONTACTED'||s==='DONE')return {label:'✓ Baat ho gayi',cls:'status-contacted'};if(s==='NO_ANSWER'||s==='NOT_RECEIVING')return {label:'📵 Call receive nahi ho raha',cls:'status-no-answer'};if(s==='CALLBACK')return {label:'↩ Dobara call karna hai',cls:'status-callback'};return {label:'📣 Follow-up Pending',cls:'status-open'};}
+  function phoneLinks(phone,label){const p=String(phone||'').replace(/[^0-9]/g,'');if(!p)return '';const wa=(p.length===10?'91':'')+p;return '<a class="contact-call-admin" href="tel:'+p+'">📞 Call '+label+'</a><a class="contact-wa-admin" target="_blank" href="https://wa.me/'+wa+'">💬 WhatsApp</a>';}
+  window.loadContactAlerts=function(){
+    if(!window.ADMIN_SESSION||!ADMIN_SESSION.token)return;
+    google.script.run.withSuccessHandler(function(res){CONTACT_ALERTS=(res&&res.alerts)||[];renderContactAlerts();}).withFailureHandler(function(err){console.warn('Contact alerts load failed',err);}).getMyContactAlerts(ADMIN_SESSION.token);
+  };
+  window.setFollowupFilter=function(f){FOLLOWUP_FILTER=f;renderContactAlerts();};
+  window.renderContactAlerts=function(){
+    const panel=document.getElementById('contactAlertsPanel');if(!panel)return;
+    const all=(CONTACT_ALERTS||[]).slice();
+    if(!all.length){panel.innerHTML='';panel.classList.add('hidden');return;}
+    panel.classList.remove('hidden');
+    const pending=all.filter(a=>String(a.status||'OPEN').toUpperCase()==='OPEN').length;
+    let rows=all;
+    if(FOLLOWUP_FILTER==='OPEN') rows=all.filter(a=>['OPEN','CALLBACK'].includes(String(a.status||'OPEN').toUpperCase()));
+    else if(FOLLOWUP_FILTER==='DONE') rows=all.filter(a=>['CONTACTED','DONE','NO_ANSWER','NOT_RECEIVING'].includes(String(a.status||'').toUpperCase()));
+    panel.innerHTML='<div class="contact-alert-title"><div><span>📣 Follow-up / Region Action Center</span><div class="contact-alert-sub">Super Admin ke follow-up requests aur Region Admin ki live response status.</div></div><span class="followup-count">'+pending+' Pending</span></div>'+
+      '<div class="followup-tabs"><button class="'+(FOLLOWUP_FILTER==='OPEN'?'active':'')+'" onclick="setFollowupFilter(\'OPEN\')">Pending</button><button class="'+(FOLLOWUP_FILTER==='ALL'?'active':'')+'" onclick="setFollowupFilter(\'ALL\')">All Requests</button><button class="'+(FOLLOWUP_FILTER==='DONE'?'active':'')+'" onclick="setFollowupFilter(\'DONE\')">Updated</button><button onclick="loadContactAlerts()">↻ Refresh</button></div>'+
+      '<div class="contact-alert-list">'+(rows.length?rows.map(function(a){
+        const sm=statusMeta(a.status),admins=Array.isArray(a.assignedAdmins)?a.assignedAdmins:[];
+        const adminInfo=admins.length?admins.map(function(ad){return '<div class="followup-admin-box"><div class="followup-admin-name">👤 Responsible Admin: '+esc(ad.name||ad.email)+'</div><div class="contact-alert-meta">'+esc(ad.email||'')+(ad.mobile?' • '+esc(ad.mobile):'')+'</div>'+(isSuper()?'<div class="contact-alert-actions">'+phoneLinks(ad.mobile,'Admin')+(ad.email?'<a class="contact-call-admin" href="mailto:'+encodeURIComponent(ad.email)+'">✉️ Email</a>':'')+'</div>':'')+'</div>';}).join(''):'<div class="followup-admin-box"><div class="contact-alert-meta">Responsible Region Admin account not found.</div></div>';
+        const qariPhone=phoneLinks(a.phone,'Qari');
+        const regionActions=!isSuper()?'<button class="contact-done" onclick="updateContactAlert(\''+escAttr(a.id)+'\',\'CONTACTED\')">✓ Haan, baat ho gayi</button><button class="contact-noanswer" onclick="updateContactAlert(\''+escAttr(a.id)+'\',\'NO_ANSWER\')">📵 Call receive nahi</button><button class="contact-callback" onclick="updateContactAlert(\''+escAttr(a.id)+'\',\'CALLBACK\')">↩ Dobara call</button>':'';
+        const response=(a.resolutionNote?'<div class="contact-alert-note">📝 Region Admin response: '+esc(a.resolutionNote)+'</div>':'')+(a.resolvedByName?'<div class="contact-alert-meta" style="margin-top:6px">Updated by: '+esc(a.resolvedByName)+(a.resolvedAt?' • '+esc(String(a.resolvedAt)):'')+'</div>':'');
+        return '<div class="contact-alert-item"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><b>'+esc(a.qariName||'Qari Sahab')+'</b><span class="followup-badge '+sm.cls+'">'+sm.label+'</span></div><div class="contact-alert-meta">📍 '+esc([a.region,a.part].filter(Boolean).join(' • '))+'<br>🕌 '+esc(a.centre||'')+'<br>💰 Amount when flagged: '+money(a.amountSnapshot||0)+'<br>👤 Requested by: '+esc(a.createdByName||'Super Admin')+'</div>'+(a.note?'<div class="contact-alert-note">📌 Super Admin message: '+esc(a.note)+'</div>':'')+adminInfo+response+'<div class="contact-alert-actions">'+qariPhone+regionActions+'</div></div>';
+      }).join(''):'<div class="followup-empty">Is category me koi follow-up request nahi hai.</div>')+'</div>';
+  };
+  window.updateContactAlert=function(id,status){
+    const labels={CONTACTED:'Haan, baat ho gayi',NO_ANSWER:'Call receive nahi ho raha',CALLBACK:'Dobara call karna hai'};
+    const note=prompt('Optional note / response:',labels[status]||''); if(note===null)return;
+    google.script.run.withSuccessHandler(function(){loadContactAlerts();}).withFailureHandler(function(e){alert('Follow-up update failed: '+((e&&e.message)||e));}).resolveContactAlert(ADMIN_SESSION.token,id,status,note);
+  };
+  window.createContactFollowup=function(id){
+    if(!isSuper()){alert('Only Super Admin can send follow-up requests.');return;}
+    const q=(DATA||[]).find(x=>String(x.id)===String(id));if(!q){alert('Qari Sahab not found.');return;}
+    const note=prompt('Region Admin ke liye message:', 'Please contact this Qari Sahab regarding collection progress.');if(note===null)return;
+    if(!confirm('Responsible Region Admin ko follow-up request bhejna hai?'))return;
+    google.script.run.withSuccessHandler(function(){alert('Follow-up request sent. Region Admin portal me notification show hogi.');loadContactAlerts();}).withFailureHandler(function(e){alert('Follow-up request failed: '+((e&&e.message)||e));}).createContactAlert(ADMIN_SESSION.token,id,note);
+  };
+  const oldRender=window.renderDashboard;
+  window.renderDashboard=function(){oldRender();try{const search=((document.getElementById('searchInput')||{}).value||'').toLowerCase().trim();const region=((document.getElementById('regionFilter')||{}).value||'all');const visible=(DATA||[]).filter(function(x){const text=[x.name,x.centre,x.region,x.part,x.qariPhone].join(' ').toLowerCase();return text.includes(search)&&(region==='all'||x.region===region);});renderProfessionalSummaryForVisible(visible);}catch(e){console.error('Summary render error',e);}if(isSuper()){document.querySelectorAll('.qari-work-card').forEach(function(card){if(card.querySelector('.super-followup-btn'))return;const input=card.querySelector('input[id^="qa_"]');if(!input)return;const id=input.id.replace(/^qa_/,'');const btn=document.createElement('button');btn.type='button';btn.className='super-followup-btn';btn.textContent='📣 Ask Region Admin to Contact';btn.onclick=function(){createContactFollowup(id);};card.appendChild(btn);});}};
+  window.renderProfessionalSummaryForVisible=function(list){list=Array.isArray(list)?list:[];const by={};list.forEach(function(x){const key=x.region||'Unassigned Region';if(!by[key])by[key]={amount:0,count:0};by[key].amount+=(Number(x.amount)||0);by[key].count++;});const ranked=Object.entries(by).sort((a,b)=>b[1].amount-a[1].amount);const rs=document.getElementById('regionSummary'),si=document.getElementById('smartInsights');if(rs)rs.innerHTML=ranked.length?ranked.map(function(entry,i){const r=entry[0],v=entry[1];return '<div class="summary-card"><div>'+String(i+1)+'. '+esc(r)+'</div><b>'+money(v.amount)+'</b><small>'+v.count+' Qari Sahiban • '+(v.amount/UNIT_RATE).toFixed(2)+' Units</small></div>';}).join(''):'<div class="summary-card">No region data found.</div>';const sorted=list.slice().sort((a,b)=>(Number(b.amount)||0)-(Number(a.amount)||0)),top=sorted[0],zero=list.filter(x=>(Number(x.amount)||0)===0).length,near=list.filter(x=>(Number(x.amount)||0)>0).map(function(x){const remainder=(Number(x.amount)||0)%UNIT_RATE;return Object.assign({},x,{need:remainder===0?UNIT_RATE:UNIT_RATE-remainder});}).sort((a,b)=>a.need-b.need)[0];if(si)si.innerHTML='<div class="insight-card">🔥 Top Performer<b>'+(top?esc(top.name)+' — '+money(top.amount):'No data')+'</b></div><div class="insight-card">⚠️ No Collection<b>'+zero+' Qari Sahiban</b></div><div class="insight-card">🎯 Closest to Next Unit<b>'+(near?esc(near.name)+' • Needs '+money(near.need):'No data')+'</b></div>';};
+  const oldLoad=window.loadPortalData;
+  window.loadPortalData=function(){const r=oldLoad.apply(this,arguments);setTimeout(function(){if(ADMIN_SESSION&&ADMIN_SESSION.token)loadContactAlerts();},80);return r;};
+  if(!window.__followupPollStarted){window.__followupPollStarted=true;setInterval(function(){if(ADMIN_SESSION&&ADMIN_SESSION.token)loadContactAlerts();},30000);}
+})();
+</script>
+
+
+<!-- FINAL MOBILE-FIRST CARD LAYOUT PATCH -->
+<style id="final-mobile-clean-card-layout">
+/* Final cascade: these rules intentionally come last so older card CSS cannot override them. */
+.qari-card-grid{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:20px !important;
+  width:100% !important;
+  max-width:1560px !important;
+  margin:0 auto 28px !important;
+}
+.qari-work-card{width:100% !important;min-width:0 !important;}
+
+@media (max-width:1180px){
+  .qari-card-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;max-width:1040px !important;}
+}
+
+/* Tablet and phone: exactly ONE card per row. */
+@media (max-width:900px){
+  .container{padding-left:12px !important;padding-right:12px !important;}
+  .qari-card-grid{
+    grid-template-columns:1fr !important;
+    width:min(100%,620px) !important;
+    max-width:620px !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    gap:16px !important;
+  }
+  .qari-work-card{padding:16px !important;border-radius:20px !important;}
+}
+
+/* Phone polish — cleaner, less bulky, closer to the requested single-card reference. */
+@media (max-width:600px){
+  body{overflow-x:hidden !important;}
+  .container{padding:10px 10px 24px !important;}
+  .qari-card-grid{gap:14px !important;padding:0 !important;}
+  .qari-work-card{padding:14px !important;border-radius:18px !important;box-shadow:0 7px 22px rgba(15,23,42,.08) !important;}
+  .qari-head{gap:12px !important;align-items:center !important;}
+  .qari-photo,.qari-photo-placeholder{width:64px !important;height:64px !important;flex:0 0 64px !important;border-width:3px !important;}
+  .qari-photo-placeholder{font-size:28px !important;}
+  .qari-name{font-size:17px !important;line-height:1.22 !important;}
+  .qari-centre{font-size:12px !important;margin-top:3px !important;}
+  .qari-region{font-size:10px !important;margin-top:4px !important;}
+  .qari-contact{display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important;margin:12px 0 10px !important;}
+  .qari-contact a{width:100% !important;padding:9px 6px !important;font-size:12px !important;text-align:center !important;}
+  .qari-stats{display:grid !important;grid-template-columns:1fr 1fr !important;gap:7px !important;margin:10px 0 !important;}
+  .qstat{min-height:62px !important;padding:9px 7px !important;border-radius:11px !important;}
+  .qstat span,.qstat small{font-size:9px !important;}
+  .qstat b{font-size:15px !important;}
+  .quick-amount{display:grid !important;grid-template-columns:minmax(0,1fr) auto auto !important;gap:7px !important;margin-top:10px !important;}
+  .quick-amount input{width:100% !important;min-width:0 !important;padding:11px 10px !important;font-size:14px !important;}
+  .quick-amount button{padding:10px 10px !important;font-size:12px !important;white-space:nowrap !important;}
+  .quick-presets{display:grid !important;grid-template-columns:repeat(4,1fr) !important;gap:6px !important;margin-top:8px !important;}
+  .quick-presets button{width:100% !important;padding:6px 3px !important;font-size:10px !important;}
+  .quick-bottom{display:grid !important;grid-template-columns:1fr 1fr !important;gap:7px !important;margin-top:9px !important;}
+  .quick-bottom button{width:100% !important;padding:9px 6px !important;font-size:11px !important;}
+  .quick-history{font-size:11px !important;}
+  .super-followup-btn{font-size:11px !important;padding:9px 8px !important;}
+}
+
+/* Very narrow screens: keep controls usable without horizontal overflow. */
+@media (max-width:380px){
+  .qari-work-card{padding:12px !important;}
+  .qari-name{font-size:16px !important;}
+  .quick-amount{grid-template-columns:minmax(0,1fr) 72px !important;}
+  .quick-amount .quick-minus{grid-column:1 / -1 !important;width:100% !important;}
+}
+</style>
+
+</body>
+</html>
